@@ -1,35 +1,113 @@
-:root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&family=JetBrains+Mono:wght@400;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap');
 
-  color: rgba(255, 255, 255, 0.87);
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+@layer base {
+  :root {
+    color-scheme: dark;
+  }
 
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+  html {
+    background-color: #131313;
+    color: #e5e2e1;
+  }
 
+  body {
+    @apply bg-background text-on-background;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 16px;
+    line-height: 1.5;
+    font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    font-synthesis: none;
+  }
+
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
 }
 
-.card {
-  padding: 2em;
+@layer components {
+  /* Pixel art beveled container */
+  .pixel-box {
+    @apply border border-outline-variant bg-surface-container;
+    box-shadow: 4px 4px 0px #000;
+  }
+
+  /* Scanline overlay effect */
+  .scanlines {
+    position: relative;
+  }
+  .scanlines::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0, 0, 0, 0.08) 2px,
+      rgba(0, 0, 0, 0.08) 4px
+    );
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* Pixel text shadow */
+  .pixel-text-shadow {
+    text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.8);
+  }
+
+  /* LIVE pulse badge */
+  .badge-live {
+    @apply inline-flex items-center gap-1 bg-error-container text-error uppercase tracking-widest;
+    font-family: "Space Mono", monospace;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1;
+    padding: 2px 8px;
+    animation: live-pulse 1.4s ease-in-out infinite;
+  }
+
+  @keyframes live-pulse {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.55; }
+  }
+
+  /* Pixel art button base */
+  .pixel-btn {
+    @apply border border-outline bg-surface-container-high text-on-surface uppercase tracking-wider cursor-pointer;
+    font-family: "Space Mono", monospace;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1;
+    padding: 8px 12px;
+    box-shadow: 2px 2px 0px #000;
+    transition: background-color 0.15s, box-shadow 0.1s, transform 0.1s;
+  }
+
+  .pixel-btn:hover {
+    @apply bg-surface-container-highest;
+    box-shadow: 3px 3px 0px #000;
+  }
+
+  .pixel-btn:focus-visible {
+    outline: 2px solid #c1c1fe;
+    outline-offset: 2px;
+  }
+
+  .pixel-btn:active {
+    box-shadow: 1px 1px 0px #000;
+    transform: translate(1px, 1px);
+  }
 }
 
-.read-the-docs {
-  color: #888;
-}
-
-.box:nth-child(3n + 1) {
-  grid-column: 1;
-}
-.box:nth-child(3n + 2) {
-  grid-column: 2;
-}
-.box:nth-child(3n + 3) {
-  grid-column: 3;
+@layer utilities {
+  .glow-primary  { box-shadow: 0 0 12px rgba(193, 193, 254, 0.4); }
+  .glow-tertiary { box-shadow: 0 0 12px rgba(0, 230, 57, 0.4); }
+  .glow-error    { box-shadow: 0 0 12px rgba(255, 180, 171, 0.4); }
 }

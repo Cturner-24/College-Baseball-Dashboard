@@ -1,0 +1,142 @@
+// Design tokens — single source of truth extracted from Stitch "Bit-Perfect Arena" design system.
+// All hardcoded values in the codebase must reference these constants.
+
+export const colors = {
+  // Surfaces
+  background:                "#131313",
+  surface:                   "#131313",
+  "surface-dim":             "#131313",
+  "surface-bright":          "#3a3939",
+  "surface-variant":         "#353534",
+  "surface-container-lowest":"#0e0e0e",
+  "surface-container-low":   "#1c1b1b",
+  "surface-container":       "#201f1f",
+  "surface-container-high":  "#2a2a2a",
+  "surface-container-highest":"#353534",
+  "surface-tint":            "#c1c1fe",
+
+  // On-surfaces
+  "on-background":           "#e5e2e1",
+  "on-surface":              "#e5e2e1",
+  "on-surface-variant":      "#c8c5d0",
+  "inverse-surface":         "#e5e2e1",
+  "inverse-on-surface":      "#313030",
+
+  // Primary
+  primary:                   "#c1c1fe",
+  "on-primary":              "#2a2b5d",
+  "primary-container":       "#121245",
+  "on-primary-container":    "#7c7db5",
+  "primary-fixed":           "#e1dfff",
+  "primary-fixed-dim":       "#c1c1fe",
+  "on-primary-fixed":        "#141447",
+  "on-primary-fixed-variant":"#414275",
+  "inverse-primary":         "#58598f",
+
+  // Secondary
+  secondary:                 "#ffb2b8",
+  "on-secondary":            "#67001d",
+  "secondary-container":     "#ff506e",
+  "on-secondary-container":  "#5b0018",
+  "secondary-fixed":         "#ffdadb",
+  "secondary-fixed-dim":     "#ffb2b8",
+  "on-secondary-fixed":      "#40000f",
+  "on-secondary-fixed-variant":"#91002d",
+
+  // Tertiary (green accent)
+  tertiary:                  "#00e639",
+  "on-tertiary":             "#003907",
+  "tertiary-container":      "#001f02",
+  "on-tertiary-container":   "#009722",
+  "tertiary-fixed":          "#72ff70",
+  "tertiary-fixed-dim":      "#00e639",
+  "on-tertiary-fixed":       "#002203",
+  "on-tertiary-fixed-variant":"#00530e",
+
+  // Error
+  error:                     "#ffb4ab",
+  "on-error":                "#690005",
+  "error-container":         "#93000a",
+  "on-error-container":      "#ffdad6",
+
+  // Outline
+  outline:                   "#918f9a",
+  "outline-variant":         "#47464f",
+
+  // Named semantic
+  "navy-mid":                "#121245",
+
+  // Sport-specific
+  "runner-orange":           "#f97316",
+  "ball-green":              "#22c55e",
+  "strike-yellow":           "#facc15",
+  "out-red":                 "#ef4444",
+  "win-green":               "#15803d",
+  "amber-warning":           "#fbbf24",
+
+  // Team accents
+  "arkansas-red":            "#9D2235",
+  "lsu-purple":              "#461D7C",
+  "stanford-cardinal":       "#8C1515",
+  "texas-burnt-orange":      "#BF5700",
+  "ucla-blue":               "#2774AE",
+  "vandy-gold":              "#CFB87C",
+} as const;
+
+export const fontFamily = {
+  "headline-xl":       ["Space Mono", "monospace"],
+  "headline-lg":       ["Space Mono", "monospace"],
+  "headline-lg-mobile":["Space Mono", "monospace"],
+  "score-display":     ["Space Mono", "monospace"],
+  "label-sm":          ["Space Mono", "monospace"],
+  "nav-brand":         ["Space Mono", "monospace"],
+  "metadata":          ["Space Mono", "monospace"],
+  "body-md":           ["JetBrains Mono", "monospace"],
+  "body-data":         ["JetBrains Mono", "monospace"],
+} as const;
+
+export const fontSize = {
+  "headline-xl":        ["48px", { lineHeight: "1.1", letterSpacing: "-2px",  fontWeight: "700" }],
+  "headline-lg":        ["32px", { lineHeight: "1.2",                         fontWeight: "700" }],
+  "headline-lg-mobile": ["24px", { lineHeight: "1.2",                         fontWeight: "700" }],
+  "score-display":      ["64px", { lineHeight: "1",   letterSpacing: "4px",   fontWeight: "700" }],
+  "label-sm":           ["12px", { lineHeight: "1",                           fontWeight: "700" }],
+  "body-md":            ["16px", { lineHeight: "1.5",                         fontWeight: "400" }],
+  "nav-brand":          ["20px", { lineHeight: "1",                           fontWeight: "800" }],
+  "body-data":          ["14px", { lineHeight: "1.4",                         fontWeight: "400" }],
+  "metadata":           ["10px", { lineHeight: "1",                           fontWeight: "700" }],
+} as const;
+
+export const spacing = {
+  gutter:           "16px",
+  "container-max":  "1200px",
+  pixel_unit:       "4px",
+  xs:               "4px",
+  sm:               "8px",
+  md:               "12px",
+  lg:               "14px",
+  xl:               "16px",
+} as const;
+
+export const borderRadius = {
+  DEFAULT: "0px",
+  sm:      "0px",
+  md:      "0px",
+  lg:      "0px",
+  xl:      "0px",
+  full:    "9999px",
+} as const;
+
+export const boxShadow = {
+  "pixel-sm":  "4px 4px 0px #000",
+  "pixel-md":  "6px 6px 0px #000",
+  "pixel-lg":  "8px 8px 0px #000",
+  "pixel-inset":"inset 2px 2px 0px rgba(255,255,255,0.1)",
+  "glow-primary": "0 0 12px rgba(193,193,254,0.4)",
+  "glow-tertiary":"0 0 12px rgba(0,230,57,0.4)",
+} as const;
+
+export const zIndex = {
+  base:    1,
+  overlay: 200,
+} as const;
