@@ -460,7 +460,7 @@ async function fetchGameDetails(sport: Sport, eventId: string): Promise<GameDeta
 
 // ─── Spinner ──────────────────────────────────────────────────────────────────
 
-function Spinner() { return <div className="spinner" aria-label="Loading" />; }
+function Spinner() { return <div className="spinner" role="status" aria-label="Loading" />; }
 
 // ─── Hero Carousel ────────────────────────────────────────────────────────────
 
@@ -480,13 +480,12 @@ function HeroCarousel({ items, sport }: { items: NewsItem[]; sport: Sport }) {
   const goTo = (i: number) => { setCurrent(i); startTimer(items); };
   const prev = () => goTo((current - 1 + items.length) % items.length);
   const next = () => goTo((current + 1) % items.length);
-
   if (items.length === 0) {
     return (
       <div className="carousel carousel--empty">
         <div className="carousel__placeholder">
-          <span className="carousel__placeholder-icon">{sport==="mlb"?"🏟️":"🎓"}</span>
-          <h2 className="carousel__placeholder-title">{sport==="mlb" ? "MLB" : "College Baseball"}</h2>
+          <span className="carousel__placeholder-icon">{sport === "mlb" ? "🏟️" : "🎓"}</span>
+          <h2 className="carousel__placeholder-title">{sport === "mlb" ? "MLB" : "College Baseball"}</h2>
           <p className="carousel__placeholder-sub">Live Scores · Box Scores · Standings</p>
         </div>
       </div>
@@ -517,11 +516,11 @@ function HeroCarousel({ items, sport }: { items: NewsItem[]; sport: Sport }) {
       </div>
       {items.length > 1 && (
         <>
-          <button className="carousel__btn carousel__btn--prev" onClick={prev}>‹</button>
-          <button className="carousel__btn carousel__btn--next" onClick={next}>›</button>
+          <button type="button" className="carousel__btn carousel__btn--prev" onClick={prev} aria-label="Previous">‹</button>
+          <button type="button" className="carousel__btn carousel__btn--next" onClick={next} aria-label="Next">›</button>
           <div className="carousel__dots">
             {items.map((_, i) => (
-              <button key={i} className={`carousel__dot${i===current?" carousel__dot--active":""}`} onClick={() => goTo(i)} />
+              <button type="button" key={i} className={`carousel__dot${i===current?" carousel__dot--active":""}`} onClick={() => goTo(i)} aria-label={`Slide ${i+1}`} />
             ))}
           </div>
         </>
@@ -535,16 +534,16 @@ function HeroCarousel({ items, sport }: { items: NewsItem[]; sport: Sport }) {
 function DateNav({ date, setDate, liveCount }: { date: Date; setDate: (d: Date) => void; liveCount?: number }) {
   return (
     <div className="date-nav">
-      <button className="date-nav__arrow" onClick={() => setDate(shiftDay(date,-1))}>‹</button>
+      <button type="button" className="date-nav__arrow" onClick={() => setDate(shiftDay(date,-1))} aria-label="Previous day">‹</button>
       <div className="date-nav__center">
         <p className="date-nav__label">{formatDisplayDate(date)}</p>
         {!isToday(date) ? (
-          <button className="today-btn" onClick={() => setDate(new Date())}>Back to Today</button>
+          <button type="button" className="today-btn" onClick={() => setDate(new Date())}>Back to Today</button>
         ) : (liveCount ?? 0) > 0 ? (
           <span className="live-count">{liveCount} game{liveCount!>1?"s":""} live</span>
         ) : null}
       </div>
-      <button className="date-nav__arrow" onClick={() => setDate(shiftDay(date,1))}>›</button>
+      <button type="button" className="date-nav__arrow" onClick={() => setDate(shiftDay(date,1))} aria-label="Next day">›</button>
     </div>
   );
 }
@@ -555,7 +554,7 @@ function GameCard({ game, onClick }: { game: Game; onClick: () => void }) {
   const isFinal = game.status==="STATUS_FINAL";
   const isLive  = game.status==="STATUS_IN_PROGRESS";
   return (
-    <button className={`game-card${isLive?" game-card--live":""}`} onClick={onClick}>
+    <button type="button" className={`game-card${isLive?" game-card--live":""}`} onClick={onClick} aria-label={`${game.away.name} vs ${game.home.name}, ${game.statusDetail}`}>
       <div className="game-card__status">
         {isLive  && <span className="badge badge--live">● LIVE</span>}
         {isFinal && <span className="badge badge--final">Final</span>}
@@ -1027,7 +1026,7 @@ function LeadersSection({ sport, date, setDate }: { sport: Sport; date: Date; se
       ) : performers.length===0 ? (
         <div className="center-message">
           <p>No performer data available for this date.</p>
-          <p style={{fontSize:".82rem",color:"#a0aec0",marginTop:"6px"}}>Try a recent date with completed games.</p>
+          <p className="modal-empty-sub">Try a recent date with completed games.</p>
         </div>
       ) : (
         <div className="leaders-grid">
@@ -1143,7 +1142,7 @@ function GameDetailsModal({ game, sport, onClose }: { game: Game; sport: Sport; 
               {game.home.logo && <img src={game.home.logo} alt="" className="modal-team-logo" />}
             </div>
           </div>
-          <button className="modal-close-btn" onClick={onClose} aria-label="Close">✕</button>
+          <button type="button" className="modal-close-btn" onClick={onClose} aria-label="Close game details">✕</button>
         </div>
 
         {!isScheduled && (
@@ -1155,10 +1154,12 @@ function GameDetailsModal({ game, sport, onClose }: { game: Game; sport: Sport; 
                ...(showHighlightsTab?[{id:"highlights",label:"Highlights"}]:[]),
              ] as {id:DetailTab;label:string}[])
               .map(tab => (
-                <button key={tab.id}
+                <button type="button" key={tab.id}
                   className={`modal-tab${activeTab===tab.id?" modal-tab--active":""}`}
                   style={activeTab===tab.id?{color:currentTeamColor,borderBottomColor:currentTeamColor}:{}}
-                  onClick={() => setActiveTab(tab.id)}>
+                  onClick={() => setActiveTab(tab.id)}
+                  aria-selected={activeTab===tab.id}
+                  role="tab">
                   {tab.label}
                 </button>
               ))}
@@ -1238,10 +1239,11 @@ function GameDetailsModal({ game, sport, onClose }: { game: Game; sport: Sport; 
                   const tc = teamHex(team.color);
                   const isActive = teamIdx===i;
                   return (
-                    <button key={i}
+                    <button type="button" key={i}
                       className={`team-select-btn${isActive?" team-select-btn--active":""}`}
                       style={isActive?{borderColor:tc,background:`${tc}15`,color:tc}:{}}
-                      onClick={() => setTeamIdx(i)}>
+                      onClick={() => setTeamIdx(i)}
+                      aria-pressed={isActive}>
                       {team.logo && <img src={team.logo} alt="" className="btn-logo" />}
                       {team.abbr||team.name}
                     </button>
@@ -1312,7 +1314,7 @@ function App() {
           <span className="site-nav__brand">⚾ Baseball Dashboard</span>
           <div className="site-nav__tabs">
             {([["scores","📊 Scores"],["standings","🏆 Standings"],["leaders","⭐ Leaders"]] as [Section,string][]).map(([s,label])=>(
-              <button key={s} className={`site-nav__tab${section===s?" site-nav__tab--active":""}`} onClick={()=>setSection(s)}>
+              <button type="button" key={s} className={`site-nav__tab${section===s?" site-nav__tab--active":""}`} onClick={()=>setSection(s)} aria-current={section===s?"page":undefined}>
                 {label}
               </button>
             ))}
@@ -1328,14 +1330,14 @@ function App() {
 
         {/* Sport pills */}
         <div className="sport-pills">
-          <button className={`sport-pill${sport==="college-baseball"?" sport-pill--active":""}`}
-            onClick={()=>setSport("college-baseball")}>🎓 D1 College</button>
-          <button className="sport-pill sport-pill--soon" disabled
-            title="D2/D3 scores require a backend server — no public API is available">
+          <button type="button" className={`sport-pill${sport==="college-baseball"?" sport-pill--active":""}`}
+            onClick={()=>setSport("college-baseball")} aria-pressed={sport==="college-baseball"}>🎓 D1 College</button>
+          <button type="button" className="sport-pill sport-pill--soon" disabled
+            title="D2/D3 scores require a backend server — no public API is available" aria-disabled="true">
             🎓 D2 / D3 <span className="pill-badge">Soon</span>
           </button>
-          <button className={`sport-pill${sport==="mlb"?" sport-pill--active":""}`}
-            onClick={()=>setSport("mlb")}>🏟️ MLB</button>
+          <button type="button" className={`sport-pill${sport==="mlb"?" sport-pill--active":""}`}
+            onClick={()=>setSport("mlb")} aria-pressed={sport==="mlb"}>🏟️ MLB</button>
         </div>
 
         {/* Scores */}
@@ -1348,7 +1350,7 @@ function App() {
               ) : gamesError ? (
                 <div className="center-message center-message--error">
                   <p>{gamesError}</p>
-                  <button className="retry-btn" onClick={loadGames}>Retry</button>
+                  <button type="button" className="retry-btn" onClick={loadGames}>Retry</button>
                 </div>
               ) : games.length===0 ? (
                 <div className="center-message">
