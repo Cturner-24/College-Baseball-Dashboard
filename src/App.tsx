@@ -1,5 +1,44 @@
 import { useState, useEffect, useCallback, useRef } from "react";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import "./App.css";
+
+// ─── Animation variants ───────────────────────────────────────────────────────
+
+const blurSlideUp = {
+  hidden:  { opacity: 0, filter: "blur(12px)", y: 28 },
+  visible: { opacity: 1, filter: "blur(0px)",  y: 0,
+             transition: { duration: 0.7, ease: [0.25, 0.46, 0.45, 0.94] } },
+};
+
+const blurSlideUpReduced = {
+  hidden:  { opacity: 0 },
+  visible: { opacity: 1, transition: { duration: 0.7 } },
+};
+
+const conditionalEnter = {
+  hidden:  { opacity: 0, scale: 0.9, filter: "blur(8px)",  y: 10 },
+  visible: { opacity: 1, scale: 1,   filter: "blur(0px)", y: 0,
+             transition: { duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] } },
+};
+const conditionalExit = {
+  exit: { opacity: 0, scale: 0.95, filter: "blur(4px)", y: -6,
+          transition: { duration: 0.2 } },
+};
+
+const staggerContainer = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.09 } },
+};
+
+const cardHover = {
+  y: -7, scale: 1.018,
+  transition: { type: "spring" as const, stiffness: 300, damping: 22 },
+};
+
+function useBlurSlideUp() {
+  const prefersReduced = useReducedMotion();
+  return prefersReduced ? blurSlideUpReduced : blurSlideUp;
+}
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -553,8 +592,17 @@ function DateNav({ date, setDate, liveCount }: { date: Date; setDate: (d: Date) 
 function GameCard({ game, onClick }: { game: Game; onClick: () => void }) {
   const isFinal = game.status==="STATUS_FINAL";
   const isLive  = game.status==="STATUS_IN_PROGRESS";
+  const variants = useBlurSlideUp();
   return (
-    <button type="button" className={`game-card${isLive?" game-card--live":""}`} onClick={onClick} aria-label={`${game.away.name} vs ${game.home.name}, ${game.statusDetail}`}>
+    <motion.button
+      type="button"
+      className={`game-card${isLive?" game-card--live":""}`}
+      onClick={onClick}
+      aria-label={`${game.away.name} vs ${game.home.name}, ${game.statusDetail}`}
+      variants={variants}
+      whileHover={cardHover}
+      whileTap={{ scale: 0.97 }}
+    >
       <div className="game-card__status">
         {isLive  && <span className="badge badge--live">● LIVE</span>}
         {isFinal && <span className="badge badge--final">Final</span>}
@@ -572,7 +620,7 @@ function GameCard({ game, onClick }: { game: Game; onClick: () => void }) {
         );
       })}
       <div className="game-card__cta">View details →</div>
-    </button>
+    </motion.button>
   );
 }
 
@@ -1029,11 +1077,21 @@ function LeadersSection({ sport, date, setDate }: { sport: Sport; date: Date; se
           <p className="modal-empty-sub">Try a recent date with completed games.</p>
         </div>
       ) : (
-        <div className="leaders-grid">
+        <motion.div
+          className="leaders-grid"
+          variants={staggerContainer}
+          initial="hidden"
+          animate="visible"
+        >
           {performers.map(p => {
             const tc = teamHex(p.teamColor);
             return (
-              <div key={p.id} className="leader-card">
+              <motion.div
+                key={p.id}
+                className="leader-card"
+                variants={blurSlideUp}
+                whileHover={cardHover}
+              >
                 <div className="leader-card__header" style={{ background: `linear-gradient(135deg, ${tc}18, ${tc}06)`, borderBottom: `2px solid ${tc}25` }}>
                   <div className="leader-headshot-wrap" style={{ boxShadow: `0 0 0 3px ${tc}40` }}>
                     {p.headshot
@@ -1051,10 +1109,10 @@ function LeadersSection({ sport, date, setDate }: { sport: Sport; date: Date; se
                   </div>
                 </div>
                 <div className="leader-stat">{p.statLine}</div>
-              </div>
+              </motion.div>
             );
           })}
-        </div>
+        </motion.div>
       )}
     </div>
   );
@@ -1340,9 +1398,14 @@ function App() {
             onClick={()=>setSport("mlb")} aria-pressed={sport==="mlb"}>🏟️ MLB</button>
         </div>
 
-        {/* Scores */}
+        {/* Section transitions */}
+        <AnimatePresence mode="wait">
         {section==="scores" && (
-          <>
+          <motion.div key="scores"
+            initial={{ opacity: 0, filter: "blur(16px)", y: 20 }}
+            animate={{ opacity: 1, filter: "blur(0px)",  y: 0, transition: { duration: 0.45, ease: [0.25,0.46,0.45,0.94] } }}
+            exit={{    opacity: 0, filter: "blur(8px)",  y: -10, transition: { duration: 0.25 } }}
+          >
             <DateNav date={selectedDate} setDate={setSelectedDate} liveCount={liveCount} />
             <section className="scores-section">
               {gamesLoading ? (
@@ -1357,27 +1420,56 @@ function App() {
                   <p className="no-games-msg">No {sport==="mlb"?"MLB":"college baseball"} games on this date.</p>
                 </div>
               ) : (
-                <div className="games-grid">
+                <motion.div
+                  className="games-grid"
+                  variants={staggerContainer}
+                  initial="hidden"
+                  animate="visible"
+                >
                   {games.map(game => (
                     <GameCard key={game.id} game={game} onClick={()=>setSelectedGameId(game.id)} />
                   ))}
-                </div>
+                </motion.div>
               )}
             </section>
-          </>
+          </motion.div>
         )}
 
-        {/* Standings */}
-        {section==="standings" && <StandingsSection sport={sport} />}
+        {section==="standings" && (
+          <motion.div key="standings"
+            initial={{ opacity: 0, filter: "blur(16px)", y: 20 }}
+            animate={{ opacity: 1, filter: "blur(0px)",  y: 0, transition: { duration: 0.45, ease: [0.25,0.46,0.45,0.94] } }}
+            exit={{    opacity: 0, filter: "blur(8px)",  y: -10, transition: { duration: 0.25 } }}
+          >
+            <StandingsSection sport={sport} />
+          </motion.div>
+        )}
 
-        {/* Leaders */}
-        {section==="leaders" && <LeadersSection sport={sport} date={selectedDate} setDate={setSelectedDate} />}
+        {section==="leaders" && (
+          <motion.div key="leaders"
+            initial={{ opacity: 0, filter: "blur(16px)", y: 20 }}
+            animate={{ opacity: 1, filter: "blur(0px)",  y: 0, transition: { duration: 0.45, ease: [0.25,0.46,0.45,0.94] } }}
+            exit={{    opacity: 0, filter: "blur(8px)",  y: -10, transition: { duration: 0.25 } }}
+          >
+            <LeadersSection sport={sport} date={selectedDate} setDate={setSelectedDate} />
+          </motion.div>
+        )}
+        </AnimatePresence>
 
       </div>
 
-      {selectedGame && (
-        <GameDetailsModal game={selectedGame} sport={sport} onClose={handleClose} />
-      )}
+      <AnimatePresence>
+        {selectedGame && (
+          <motion.div
+            key="modal"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1, transition: { duration: 0.2 } }}
+            exit={{    opacity: 0, transition: { duration: 0.15 } }}
+          >
+            <GameDetailsModal game={selectedGame} sport={sport} onClose={handleClose} />
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 }
