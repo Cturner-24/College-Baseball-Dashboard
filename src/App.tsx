@@ -613,7 +613,7 @@ function GameCard({ game, onClick }: { game: Game; onClick: () => void }) {
         const t = game[side];
         return (
           <div key={side} className={`team-row${t.winner?" team-row--winner":""}`}>
-            {t.logo ? <img src={t.logo} alt="" className="team-logo" /> : <div className="team-logo team-logo--placeholder">⚾</div>}
+            {t.logo ? <img src={t.logo} alt={t.name} className="team-logo" /> : <div className="team-logo team-logo--placeholder" aria-hidden="true">⚾</div>}
             <span className="team-name">{t.name}</span>
             {!game.status.includes("SCHEDULED") && <span className={`score${t.winner?" score--bold":""}`}>{t.score}</span>}
           </div>
@@ -820,7 +820,7 @@ function LiveDiamond({ sit }: { sit: LiveSituation }) {
 
       <div className="live-diamond-body">
         {/* ── SVG field ── */}
-        <svg viewBox="0 0 300 270" className="diamond-svg" aria-label="Live baseball field">
+        <svg viewBox="0 0 300 270" className="diamond-svg" role="img" aria-label={`Baseball field: ${sit.inningLabel}. Bases: ${sit.onFirst?"1st,":""}${sit.onSecond?"2nd,":""}${sit.onThird?"3rd,":""} ${!sit.onFirst&&!sit.onSecond&&!sit.onThird?"empty":""}`}>
           {/* Grass background */}
           <rect width={300} height={270} fill="#1e5c1e" rx={8} />
 
@@ -1128,6 +1128,7 @@ function GameDetailsModal({ game, sport, onClose }: { game: Game; sport: Sport; 
   const [loadError, setLoadError] = useState<string|null>(null);
   const [teamIdx, setTeamIdx]     = useState(0);
   const [liveSit, setLiveSit]     = useState<LiveSituation|null>(null);
+  const modalRef = useRef<HTMLDivElement>(null);
 
   const isScheduled = game.status==="STATUS_SCHEDULED";
   const isLive      = game.status==="STATUS_IN_PROGRESS";
@@ -1141,9 +1142,11 @@ function GameDetailsModal({ game, sport, onClose }: { game: Game; sport: Sport; 
   }, [game.id, sport, isScheduled]);
 
   useEffect(() => {
+    const prev = document.activeElement as HTMLElement | null;
+    modalRef.current?.focus();
     const h = (e: KeyboardEvent) => { if (e.key==="Escape") onClose(); };
     window.addEventListener("keydown", h);
-    return () => window.removeEventListener("keydown", h);
+    return () => { window.removeEventListener("keydown", h); prev?.focus(); };
   }, [onClose]);
 
   // Live situation: fetch immediately + poll every 20 s while game is in progress
@@ -1163,8 +1166,8 @@ function GameDetailsModal({ game, sport, onClose }: { game: Game; sport: Sport; 
   const showHighlightsTab = !isScheduled && (details?.highlights?.length ?? 0) > 0;
 
   return (
-    <div className="modal-backdrop" onClick={handleBackdrop}>
-      <div className="modal">
+    <div className="modal-backdrop" onClick={handleBackdrop} role="dialog" aria-modal="true" aria-label={`${game.away.name} vs ${game.home.name} game details`}>
+      <div className="modal" ref={modalRef} tabIndex={-1}>
         <div className="modal-header" style={{ background: `linear-gradient(135deg, ${awayColor}18 0%, #f8fafc 45%, ${homeColor}18 100%)` }}>
           <div className="modal-matchup">
             <div className="modal-team" style={{ borderLeft: `4px solid ${awayColor}` }}>
