@@ -9,11 +9,11 @@ const schema = a.schema({
     .query()
     .arguments({ ingredients: a.string().array() })
     .returns(a.ref("BedrockResponse"))
-    .authorization((allow) => [allow.authenticated()])
+    .authorization((allow) => [allow.publicApiKey()])
     .handler(
       a.handler.custom({
         entry: "./bedrock.js",
-        dataSource: "bedrockDS"
+        dataSource: "bedrockDS",
       })
     ),
 });
