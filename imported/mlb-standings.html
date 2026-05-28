@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Baseball Dashboard - Standings</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&amp;family=JetBrains+Mono:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        
+        /* 16-bit Retro Effects */
+        .pixel-border {
+            box-shadow: 
+                -4px 0 0 0 #000,
+                4px 0 0 0 #000,
+                0 -4px 0 0 #000,
+                0 4px 0 0 #000;
+        }
+
+        .pixel-card {
+            border: 4px solid #000;
+            box-shadow: 4px 4px 0px #000000;
+        }
+
+        .pixel-bevel {
+            border-top: 4px solid rgba(255,255,255,0.2);
+            border-left: 4px solid rgba(255,255,255,0.2);
+            border-right: 4px solid rgba(0,0,0,0.4);
+            border-bottom: 4px solid rgba(0,0,0,0.4);
+        }
+
+        .pixel-text-shadow {
+            text-shadow: 2px 2px 0px #000;
+        }
+
+        .active-tab-indicator {
+            height: 4px;
+            background: #c1c1fe;
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            right: 0;
+        }
+
+        /* Scanline effect */
+        .scanlines {
+            background: linear-gradient(
+                to bottom,
+                rgba(18, 16, 16, 0) 50%,
+                rgba(0, 0, 0, 0.1) 50%
+            );
+            background-size: 100% 4px;
+            pointer-events: none;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+        .pixel-cursor {
+            display: inline-block;
+            width: 8px;
+            height: 16px;
+            background: #00e639;
+            animation: blink 1s step-end infinite;
+            vertical-align: middle;
+        }
+    </style>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "tertiary": "#00e639",
+                    "primary-fixed": "#e1dfff",
+                    "surface-container-lowest": "#0e0e0e",
+                    "on-primary": "#2a2b5d",
+                    "on-secondary": "#67001d",
+                    "primary": "#c1c1fe",
+                    "on-primary-container": "#7c7db5",
+                    "on-error-container": "#ffdad6",
+                    "surface-variant": "#353534",
+                    "secondary-container": "#ff506e",
+                    "on-primary-fixed": "#141447",
+                    "on-tertiary": "#003907",
+                    "tertiary-fixed-dim": "#00e639",
+                    "tertiary-fixed": "#72ff70",
+                    "surface-container-low": "#1c1b1b",
+                    "secondary-fixed-dim": "#ffb2b8",
+                    "on-tertiary-fixed": "#002203",
+                    "on-surface": "#e5e2e1",
+                    "surface-dim": "#131313",
+                    "on-secondary-fixed-variant": "#91002d",
+                    "surface-container-high": "#2a2a2a",
+                    "secondary": "#ffb2b8",
+                    "primary-container": "#121245",
+                    "tertiary-container": "#001f02",
+                    "inverse-primary": "#58598f",
+                    "inverse-on-surface": "#313030",
+                    "secondary-fixed": "#ffdadb",
+                    "surface": "#131313",
+                    "on-background": "#e5e2e1",
+                    "surface-container-highest": "#353534",
+                    "surface-container": "#201f1f",
+                    "inverse-surface": "#e5e2e1",
+                    "primary-fixed-dim": "#c1c1fe",
+                    "on-error": "#690005",
+                    "on-tertiary-container": "#009722",
+                    "on-secondary-fixed": "#40000f",
+                    "background": "#131313",
+                    "outline": "#918f9a",
+                    "error-container": "#93000a",
+                    "on-surface-variant": "#c8c5d0",
+                    "on-primary-fixed-variant": "#414275",
+                    "outline-variant": "#47464f",
+                    "surface-tint": "#c1c1fe",
+                    "error": "#ffb4ab",
+                    "on-tertiary-fixed-variant": "#00530e",
+                    "on-secondary-container": "#5b0018",
+                    "surface-bright": "#3a3939",
+                    "navy-mid": "#121245"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "pixel_unit": "4px",
+                    "container-max": "1200px",
+                    "margin-desktop": "32px",
+                    "gutter": "16px",
+                    "margin-mobile": "16px",
+                    "xl": "24px"
+            },
+            "fontFamily": {
+                    "headline-xl": ["Space Mono"],
+                    "score-display": ["Space Mono"],
+                    "label-sm": ["Space Mono"],
+                    "body-md": ["JetBrains Mono"],
+                    "headline-lg": ["Space Mono"],
+                    "headline-lg-mobile": ["Space Mono"],
+                    "nav-brand": ["Space Mono"],
+                    "body-data": ["JetBrains Mono"],
+                    "metadata": ["Space Mono"]
+            },
+            "fontSize": {
+                    "headline-xl": ["48px", {"lineHeight": "1.1", "letterSpacing": "-2px", "fontWeight": "700"}],
+                    "score-display": ["64px", {"lineHeight": "1", "letterSpacing": "4px", "fontWeight": "700"}],
+                    "label-sm": ["12px", {"lineHeight": "1", "fontWeight": "700"}],
+                    "body-md": ["16px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                    "headline-lg": ["32px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                    "nav-brand": ["24px", {"fontWeight": "800"}],
+                    "body-data": ["14px", {"fontWeight": "400"}],
+                    "metadata": ["10px", {"fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+</head>
+<body class="bg-background text-on-background font-body-md overflow-x-hidden">
+<!-- Scanline Overlay -->
+<div class="fixed inset-0 scanlines z-[60] pointer-events-none opacity-30"></div>
+<!-- TopNavBar (Shared Component Identity) -->
+<header class="docked full-width top-0 sticky z-50 bg-navy-mid border-b border-white/10 shadow-md">
+<div class="flex justify-between items-center w-full px-xl max-w-container-max mx-auto h-16">
+<div class="flex items-center gap-8">
+<span class="font-nav-brand text-nav-brand text-on-primary tracking-tight">Baseball Dashboard</span>
+<nav class="hidden md:flex gap-6 items-center h-full">
+<a class="font-body-data text-body-data text-on-secondary-container hover:text-on-primary opacity-80 hover:bg-white/5 transition-colors" href="#">Scores</a>
+<a class="font-body-data text-body-data text-primary-fixed-dim font-bold border-b-2 border-primary-fixed-dim pb-1" href="#">Standings</a>
+<a class="font-body-data text-body-data text-on-secondary-container hover:text-on-primary opacity-80 hover:bg-white/5 transition-colors" href="#">Leaders</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<div class="hidden md:flex bg-black/40 border border-white/20 px-3 py-1 items-center gap-2">
+<span class="material-symbols-outlined text-primary text-sm">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm font-body-data w-32 p-0" placeholder="Search..." type="text"/>
+</div>
+<div class="flex gap-2">
+<button class="material-symbols-outlined p-2 hover:bg-white/5 transition-colors text-on-primary">notifications</button>
+<button class="material-symbols-outlined p-2 hover:bg-white/5 transition-colors text-on-primary">account_circle</button>
+</div>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas with Stadium Background -->
+<main class="relative min-h-screen">
+<!-- Stadium Background Layer -->
+<div class="fixed inset-0 z-0">
+<img alt="MLB Stadium Pixel Art" class="w-full h-full object-cover brightness-[0.4]" src="https://lh3.googleusercontent.com/aida/ADBb0ui0-hp2VjxCLE_PnEcVsbS9iSLXm7Xi_5ykOUA4NyT1E_S9Uffpg-2bkQW4GvTaBgu7zhCz-7Fdt361QLHJhzQvYJJ7_p_DZZ8FIZZi2e_enesInuZdkqFK9poLsigFutBeXZoEnmJK9HQ-VAvZIzm5gGlKqTuT8itKrH77-z9qiYKWUoCTsXYnN0HTitghC7js1ZU5eKvyA2-e-wB-vUgVBhmvLc87FwL9kd5PdeYDKGILx3bRobpqrYk"/>
+<div class="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent"></div>
+</div>
+<div class="relative z-10 max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-8">
+<!-- Sport Selector -->
+<div class="flex gap-2 mb-8 overflow-x-auto pb-2 scrollbar-hide">
+<button class="px-6 py-2 bg-[#0046ad] border-2 border-white text-white font-headline-lg-mobile pixel-bevel active:translate-y-1 active:translate-x-1 transition-all">MLB</button>
+<button class="px-6 py-2 bg-surface-container border-2 border-black/40 text-on-surface-variant font-headline-lg-mobile pixel-bevel opacity-50">MiLB</button>
+<button class="px-6 py-2 bg-surface-container border-2 border-black/40 text-on-surface-variant font-headline-lg-mobile pixel-bevel opacity-50">KBO</button>
+<button class="px-6 py-2 bg-surface-container border-2 border-black/40 text-on-surface-variant font-headline-lg-mobile pixel-bevel opacity-50">NPB</button>
+</div>
+<!-- News Hero Carousel (Pixel Art Style) -->
+<section class="mb-12">
+<div class="pixel-card bg-surface-container-high relative overflow-hidden h-[300px] md:h-[400px]">
+<div class="absolute inset-0">
+<img class="w-full h-full object-cover" data-alt="A detailed pixel art scene of a baseball pitcher in mid-throw under bright stadium floodlights. The style is classic 16-bit console gaming with a rich palette of deep blues, emerald greens, and stark whites. Strong directional lighting creates dramatic high-contrast highlights on the uniform. The mood is high-stakes and cinematic, emphasizing the intensity of the MLB postseason race." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBFXm8ZXbruZrb_-Q7q_c47_1_czPChmShW3j6lXfKJGVy223t1N8GmeAYgMtiCTZsgqQdqQ_OSLPGk71u9Ozm1u8YKWDY1nlVZ8waeezxXD6_EKDFHkEchjMBYE15uShTKXeckhrHbqS0CQqhw2taHtPfbssH5AKThbHh6KT3fYzUKtKmEfWSWH7uso9uOcf-l-ExkDtKC3GYTd8h1Gzhx2BZjoYjp4lv41Qcv4NDlcdGqclgMeUcH58mWDdZ4q7ztJuTy0y46BBoN"/>
+</div>
+<div class="absolute inset-0 bg-gradient-to-r from-black/90 via-black/40 to-transparent"></div>
+<div class="absolute bottom-0 left-0 p-8 max-w-2xl">
+<span class="bg-secondary-container text-on-secondary-container px-3 py-1 font-label-sm text-label-sm mb-4 inline-block pixel-border uppercase">Breaking News</span>
+<h2 class="font-headline-xl text-headline-xl text-white pixel-text-shadow leading-tight mb-4">PENNANT RACE HEATS UP!<span class="pixel-cursor"></span></h2>
+<p class="text-on-surface-variant font-body-md bg-black/60 p-4 border-l-4 border-tertiary">Final weeks of the regular season approach. Divisions remain wide open as the October hunt begins.</p>
+</div>
+</div>
+</section>
+<!-- American League Section -->
+<section class="mb-16">
+<div class="mb-8 border-b-4 border-tertiary pb-2">
+<h2 class="font-headline-lg text-headline-lg text-white uppercase tracking-tighter italic">American League</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+<!-- AL East -->
+<div class="pixel-card bg-surface-container overflow-hidden">
+<div class="bg-navy-mid px-4 py-2 border-b-2 border-black">
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile text-primary">AL EAST</h3>
+</div>
+<div class="p-0">
+<table class="w-full font-body-data text-xs border-collapse">
+<thead>
+<tr class="bg-surface-container-high text-on-surface-variant text-left uppercase">
+<th class="p-2 border-b-2 border-black">Team</th>
+<th class="p-2 border-b-2 border-black text-center">W</th>
+<th class="p-2 border-b-2 border-black text-center">L</th>
+<th class="p-2 border-b-2 border-black text-center">GB</th>
+<th class="p-2 border-b-2 border-black text-center">STRK</th>
+</tr>
+</thead>
+<tbody>
+<tr class="bg-white/5 font-bold">
+<td class="p-2 border-b border-black/20">NYY</td>
+<td class="p-2 border-b border-black/20 text-center">92</td>
+<td class="p-2 border-b border-black/20 text-center">64</td>
+<td class="p-2 border-b border-black/20 text-center text-tertiary">—</td>
+<td class="p-2 border-b border-black/20 text-center">W3</td>
+</tr>
+<tr>
+<td class="p-2 border-b border-black/20">BAL</td>
+<td class="p-2 border-b border-black/20 text-center">88</td>
+<td class="p-2 border-b border-black/20 text-center">68</td>
+<td class="p-2 border-b border-black/20 text-center">4.0</td>
+<td class="p-2 border-b border-black/20 text-center">L1</td>
+</tr>
+<tr>
+<td class="p-2 border-b border-black/20">BOS</td>
+<td class="p-2 border-b border-black/20 text-center">80</td>
+<td class="p-2 border-b border-black/20 text-center">76</td>
+<td class="p-2 border-b border-black/20 text-center">12.0</td>
+<td class="p-2 border-b border-black/20 text-center">W1</td>
+</tr>
+<tr>
+<td class="p-2 border-b border-black/20">TB</td>
+<td class="p-2 border-b border-black/20 text-center">78</td>
+<td class="p-2 border-b border-black/20 text-center">78</td>
+<td class="p-2 border-b border-black/20 text-center">14.0</td>
+<td class="p-2 border-b border-black/20 text-center">L2</td>
+</tr>
+<tr>
+<td class="p-2">TOR</td>
+<td class="p-2 text-center">74</td>
+<td class="p-2 text-center">82</td>
+<td class="p-2 text-center">18.0</td>
+<td class="p-2 text-center">W1</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- AL Central -->
+<div class="pixel-card bg-surface-container overflow-hidden">
+<div class="bg-navy-mid px-4 py-2 border-b-2 border-black">
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile text-primary">AL CENTRAL</h3>
+</div>
+<div class="p-0">
+<table class="w-full font-body-data text-xs border-collapse">
+<thead>
+<tr class="bg-surface-container-high text-on-surface-variant text-left uppercase">
+<th class="p-2 border-b-2 border-black">Team</th>
+<th class="p-2 border-b-2 border-black text-center">W</th>
+<th class="p-2 border-b-2 border-black text-center">L</th>
+<th class="p-2 border-b-2 border-black text-center">GB</th>
+<th class="p-2 border-b-2 border-black text-center">STRK</th>
+</tr>
+</thead>
+<tbody>
+<tr class="bg-white/5 font-bold">
+<td class="p-2 border-b border-black/20">CLE</td>
+<td class="p-2 border-b border-black/20 text-center">90</td>
+<td class="p-2 border-b border-black/20 text-center">67</td>
+<td class="p-2 border-b border-black/20 text-center text-tertiary">—</td>
+<td class="p-2 border-b border-black/20 text-center">W2</td>
+</tr>
+<tr>
+<td class="p-2 border-b border-black/20">KC</td>
+<td class="p-2 border-b border-black/20 text-center">82</td>
+<td class="p-2 border-b border-black/20 text-center">74</td>
+<td class="p-2 border-b border-black/20 text-center">7.5</td>
+<td class="p-2 border-b border-black/20 text-center">L7</td>
+</tr>
+<tr>
+<td class="p-2 border-b border-black/20">DET</td>
+<td class="p-2 border-b border-black/20 text-center">82</td>
+<td class="p-2 border-b border-black/20 text-center">74</td>
+<td class="p-2 border-b border-black/20 text-center">7.5</td>
+<td class="p-2 border-b border-black/20 text-center">W1</td>
+</tr>
+<tr>
+<td class="p-2 border-b border-black/20">MIN</td>
+<td class="p-2 border-b border-black/20 text-center">81</td>
+<td class="p-2 border-b border-black/20 text-center">75</td>
+<td class="p-2 border-b border-black/20 text-center">8.5</td>
+<td class="p-2 border-b border-black/20 text-center">L1</td>
+</tr>
+<tr>
+<td class="p-2">CWS</td>
+<td class="p-2 text-center">36</td>
+<td class="p-2 text-center">120</td>
+<td class="p-2 text-center">53.5</td>
+<td class="p-2 text-center">L5</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- AL West -->
+<div class="pixel-card bg-surface-container overflow-hidden">
+<div class="bg-navy-mid px-4 py-2 border-b-2 border-black">
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile text-primary">AL WEST</h3>
+</div>
+<div class="p-0">
+<table class="w-full font-body-data text-xs border-collapse">
+<thead>
+<tr class="bg-surface-container-high text-on-surface-variant text-left uppercase">
+<th class="p-2 border-b-2 border-black">Team</th>
+<th class="p-2 border-b-2 border-black text-center">W</th>
+<th class="p-2 border-b-2 border-black text-center">L</th>
+<th class="p-2 border-b-2 border-black text-center">GB</th>
+<th class="p-2 border-b-2 border-black text-center">STRK</th>
+</tr>
+</thead>
+<tbody>
+<tr class="bg-white/5 font-bold">
+<td class="p-2 border-b border-black/20">HOU</td>
+<td class="p-2 border-b border-black/20 text-center">86</td>
+<td class="p-2 border-b border-black/20 text-center">71</td>
+<td class="p-2 border-b border-black/20 text-center text-tertiary">—</td>
+<td class="p-2 border-b border-black/20 text-center">W1</td>
+</tr>
+<tr>
+<td class="p-2 border-b border-black/20">SEA</td>
+<td class="p-2 border-b border-black/20 text-center">81</td>
+<td class="p-2 border-b border-black/20 text-center">76</td>
+<td class="p-2 border-b border-black/20 text-center">5.0</td>
+<td class="p-2 border-b border-black/20 text-center">W1</td>
+</tr>
+<tr>
+<td class="p-2 border-b border-black/20">TEX</td>
+<td class="p-2 border-b border-black/20 text-center">74</td>
+<td class="p-2 border-b border-black/20 text-center">83</td>
+<td class="p-2 border-b border-black/20 text-center">12.0</td>
+<td class="p-2 border-b border-black/20 text-center">L1</td>
+</tr>
+<tr>
+<td class="p-2 border-b border-black/20">LAA</td>
+<td class="p-2 border-b border-black/20 text-center">63</td>
+<td class="p-2 border-b border-black/20 text-center">93</td>
+<td class="p-2 border-b border-black/20 text-center">23.0</td>
+<td class="p-2 border-b border-black/20 text-center">L3</td>
+</tr>
+<tr>
+<td class="p-2">OAK</td>
+<td class="p-2 text-center">68</td>
+<td class="p-2 text-center">89</td>
+<td class="p-2 text-center">18.5</td>
+<td class="p-2 text-center">W2</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+<!-- National League Section -->
+<section class="mb-16">
+<div class="mb-8 border-b-4 border-secondary pb-2">
+<h2 class="font-headline-lg text-headline-lg text-white uppercase tracking-tighter italic">National League</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+<!-- NL East -->
+<div class="pixel-card bg-surface-container overflow-hidden">
+<div class="bg-navy-mid px-4 py-2 border-b-2 border-black">
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile text-primary">NL EAST</h3>
+</div>
+<div class="p-0">
+<table class="w-full font-body-data text-xs border-collapse">
+<thead>
+<tr class="bg-surface-container-high text-on-surface-variant text-left uppercase">
+<th class="p-2 border-b-2 border-black">Team</th>
+<th class="p-2 border-b-2 border-black text-center">W</th>
+<th class="p-2 border-b-2 border-black text-center">L</th>
+<th class="p-2 border-b-2 border-black text-center">GB</th>
+<th class="p-2 border-b-2 border-black text-center">STRK</th>
+</tr>
+</thead>
+<tbody>
+<tr class="bg-white/5 font-bold">
+<td class="p-2 border-b border-black/20">PHI</td>
+<td class="p-2 border-b border-black/20 text-center">93</td>
+<td class="p-2 border-b border-black/20 text-center">64</td>
+<td class="p-2 border-b border-black/20 text-center text-tertiary">—</td>
+<td class="p-2 border-b border-black/20 text-center">W1</td>
+</tr>
+<tr>
+<td class="p-2 border-b border-black/20">NYM</td>
+<td class="p-2 border-b border-black/20 text-center">87</td>
+<td class="p-2 border-b border-black/20 text-center">69</td>
+<td class="p-2 border-b border-black/20 text-center">6.0</td>
+<td class="p-2 border-b border-black/20 text-center">L1</td>
+</tr>
+<tr>
+<td class="p-2 border-b border-black/20">ATL</td>
+<td class="p-2 border-b border-black/20 text-center">85</td>
+<td class="p-2 border-b border-black/20 text-center">71</td>
+<td class="p-2 border-b border-black/20 text-center">8.0</td>
+<td class="p-2 border-b border-black/20 text-center">W1</td>
+</tr>
+<tr>
+<td class="p-2 border-b border-black/20">WSH</td>
+<td class="p-2 border-b border-black/20 text-center">69</td>
+<td class="p-2 border-b border-black/20 text-center">87</td>
+<td class="p-2 border-b border-black/20 text-center text-error">24.0</td>
+<td class="p-2 border-b border-black/20 text-center">L1</td>
+</tr>
+<tr>
+<td class="p-2">MIA</td>
+<td class="p-2 text-center">59</td>
+<td class="p-2 text-center">97</td>
+<td class="p-2 text-center">34.0</td>
+<td class="p-2 text-center">W2</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- NL Central -->
+<div class="pixel-card bg-surface-container overflow-hidden">
+<div class="bg-navy-mid px-4 py-2 border-b-2 border-black">
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile text-primary">NL CENTRAL</h3>
+</div>
+<div class="p-0">
+<table class="w-full font-body-data text-xs border-collapse">
+<thead>
+<tr class="bg-surface-container-high text-on-surface-variant text-left uppercase">
+<th class="p-2 border-b-2 border-black">Team</th>
+<th class="p-2 border-b-2 border-black text-center">W</th>
+<th class="p-2 border-b-2 border-black text-center">L</th>
+<th class="p-2 border-b-2 border-black text-center">GB</th>
+<th class="p-2 border-b-2 border-black text-center">STRK</th>
+</tr>
+</thead>
+<tbody>
+<tr class="bg-white/5 font-bold">
+<td class="p-2 border-b border-black/20">MIL</td>
+<td class="p-2 border-b border-black/20 text-center">89</td>
+<td class="p-2 border-b border-black/20 text-center">67</td>
+<td class="p-2 border-b border-black/20 text-center text-tertiary">—</td>
+<td class="p-2 border-b border-black/20 text-center">W1</td>
+</tr>
+<tr>
+<td class="p-2 border-b border-black/20">CHC</td>
+<td class="p-2 border-b border-black/20 text-center">80</td>
+<td class="p-2 border-b border-black/20 text-center">76</td>
+<td class="p-2 border-b border-black/20 text-center">9.0</td>
+<td class="p-2 border-b border-black/20 text-center">L1</td>
+</tr>
+<tr>
+<td class="p-2 border-b border-black/20">STL</td>
+<td class="p-2 border-b border-black/20 text-center">79</td>
+<td class="p-2 border-b border-black/20 text-center">77</td>
+<td class="p-2 border-b border-black/20 text-center">10.0</td>
+<td class="p-2 border-b border-black/20 text-center">W2</td>
+</tr>
+<tr>
+<td class="p-2 border-b border-black/20">CIN</td>
+<td class="p-2 border-b border-black/20 text-center">76</td>
+<td class="p-2 border-b border-black/20 text-center">80</td>
+<td class="p-2 border-b border-black/20 text-center">13.0</td>
+<td class="p-2 border-b border-black/20 text-center">L1</td>
+</tr>
+<tr>
+<td class="p-2">PIT</td>
+<td class="p-2 text-center">73</td>
+<td class="p-2 text-center">83</td>
+<td class="p-2 text-center">16.0</td>
+<td class="p-2 text-center">L1</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- NL West -->
+<div class="pixel-card bg-surface-container overflow-hidden">
+<div class="bg-navy-mid px-4 py-2 border-b-2 border-black">
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile text-primary">NL WEST</h3>
+</div>
+<div class="p-0">
+<table class="w-full font-body-data text-xs border-collapse">
+<thead>
+<tr class="bg-surface-container-high text-on-surface-variant text-left uppercase">
+<th class="p-2 border-b-2 border-black">Team</th>
+<th class="p-2 border-b-2 border-black text-center">W</th>
+<th class="p-2 border-b-2 border-black text-center">L</th>
+<th class="p-2 border-b-2 border-black text-center">GB</th>
+<th class="p-2 border-b-2 border-black text-center">STRK</th>
+</tr>
+</thead>
+<tbody>
+<tr class="bg-white/5 font-bold">
+<td class="p-2 border-b border-black/20">LAD</td>
+<td class="p-2 border-b border-black/20 text-center">93</td>
+<td class="p-2 border-b border-black/20 text-center">63</td>
+<td class="p-2 border-b border-black/20 text-center text-tertiary">—</td>
+<td class="p-2 border-b border-black/20 text-center">W1</td>
+</tr>
+<tr>
+<td class="p-2 border-b border-black/20">SD</td>
+<td class="p-2 border-b border-black/20 text-center">90</td>
+<td class="p-2 border-b border-black/20 text-center">66</td>
+<td class="p-2 border-b border-black/20 text-center">3.0</td>
+<td class="p-2 border-b border-black/20 text-center">W4</td>
+</tr>
+<tr>
+<td class="p-2 border-b border-black/20">ARI</td>
+<td class="p-2 border-b border-black/20 text-center">87</td>
+<td class="p-2 border-b border-black/20 text-center">69</td>
+<td class="p-2 border-b border-black/20 text-center">6.0</td>
+<td class="p-2 border-b border-black/20 text-center">L1</td>
+</tr>
+<tr>
+<td class="p-2 border-b border-black/20">SF</td>
+<td class="p-2 border-b border-black/20 text-center">79</td>
+<td class="p-2 border-b border-black/20 text-center">78</td>
+<td class="p-2 border-b border-black/20 text-center">14.5</td>
+<td class="p-2 border-b border-black/20 text-center">W2</td>
+</tr>
+<tr>
+<td class="p-2">COL</td>
+<td class="p-2 text-center">60</td>
+<td class="p-2 text-center">96</td>
+<td class="p-2 text-center">33.5</td>
+<td class="p-2 text-center">L2</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+</div>
+</main>
+<!-- BottomNavBar (Mobile Shell) -->
+<nav class="fixed bottom-0 w-full flex justify-around items-center px-4 py-2 md:hidden bg-navy-mid border-t border-white/10 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] z-50">
+<a class="flex flex-col items-center justify-center text-on-secondary-container opacity-70 hover:opacity-100 transition-transform active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined">sports_baseball</span>
+<span class="font-metadata text-metadata uppercase tracking-wider">Scores</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-xl px-4 py-1.5 hover:opacity-100 transition-transform active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined">format_list_numbered</span>
+<span class="font-metadata text-metadata uppercase tracking-wider">Standings</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-secondary-container opacity-70 hover:opacity-100 transition-transform active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined">leaderboard</span>
+<span class="font-metadata text-metadata uppercase tracking-wider">Leaders</span>
+</a>
+</nav>
+<script>
+        // Simple micro-interaction for rows
+        document.querySelectorAll('tr').forEach(row => {
+            row.addEventListener('mouseenter', () => {
+                if(!row.parentElement.tagName.includes('THEAD')) {
+                    row.classList.add('bg-tertiary/20');
+                }
+            });
+            row.addEventListener('mouseleave', () => {
+                if(!row.classList.contains('bg-white/5')) {
+                    row.classList.remove('bg-tertiary/20');
+                }
+            });
+        });
+
+        // Toggle search bar focus
+        const searchInput = document.querySelector('input[type="text"]');
+        searchInput.addEventListener('focus', () => {
+            searchInput.parentElement.classList.add('border-primary');
+            searchInput.parentElement.classList.remove('border-white/20');
+        });
+        searchInput.addEventListener('blur', () => {
+            searchInput.parentElement.classList.remove('border-primary');
+            searchInput.parentElement.classList.add('border-white/20');
+        });
+    </script>
+</body></html>

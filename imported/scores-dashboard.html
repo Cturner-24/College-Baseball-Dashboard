@@ -1,0 +1,440 @@
+<!DOCTYPE html><html class="dark" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Baseball Dashboard - Retro Pixel Edition</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&amp;family=JetBrains+Mono:wght@400;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-background": "#e5e2e1",
+                    "tertiary-fixed": "#72ff70",
+                    "on-error": "#690005",
+                    "error": "#ffb4ab",
+                    "on-secondary-fixed-variant": "#91002d",
+                    "on-primary-fixed": "#141447",
+                    "surface-container-highest": "#353534",
+                    "outline-variant": "#47464f",
+                    "on-tertiary-fixed-variant": "#00530e",
+                    "error-container": "#93000a",
+                    "surface-dim": "#131313",
+                    "background": "#131313",
+                    "surface-tint": "#c1c1fe",
+                    "surface-container-low": "#1c1b1b",
+                    "on-secondary-fixed": "#40000f",
+                    "surface-variant": "#353534",
+                    "on-tertiary-fixed": "#002203",
+                    "secondary": "#ffb2b8",
+                    "tertiary-fixed-dim": "#00e639",
+                    "on-tertiary-container": "#009722",
+                    "on-tertiary": "#003907",
+                    "on-surface": "#e5e2e1",
+                    "inverse-primary": "#58598f",
+                    "primary-container": "#121245",
+                    "inverse-surface": "#e5e2e1",
+                    "surface-bright": "#3a3939",
+                    "inverse-on-surface": "#313030",
+                    "on-secondary": "#67001d",
+                    "secondary-fixed": "#ffdadb",
+                    "on-surface-variant": "#c8c5d0",
+                    "on-primary": "#2a2b5d",
+                    "secondary-fixed-dim": "#ffb2b8",
+                    "on-error-container": "#ffdad6",
+                    "on-primary-fixed-variant": "#414275",
+                    "primary-fixed-dim": "#c1c1fe",
+                    "on-primary-container": "#7c7db5",
+                    "primary-fixed": "#e1dfff",
+                    "tertiary-container": "#001f02",
+                    "surface-container-high": "#2a2a2a",
+                    "surface-container": "#201f1f",
+                    "tertiary": "#00e639",
+                    "on-secondary-container": "#5b0018",
+                    "primary": "#c1c1fe",
+                    "ucla-blue": "#2774AE",
+                    "stanford-cardinal": "#8C1515",
+                    "vandy-gold": "#CFB87C",
+                    "lsu-purple": "#461D7C",
+                    "arkansas-red": "#9D2235",
+                    "texas-burnt-orange": "#BF5700"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0",
+                    "lg": "0",
+                    "xl": "0",
+                    "full": "0"
+            },
+            "spacing": {
+                    "container-max": "1200px",
+                    "margin-mobile": "16px",
+                    "pixel_unit": "4px",
+                    "gutter": "16px",
+                    "margin-desktop": "32px"
+            },
+            "fontFamily": {
+                    "label-sm": ["Space Mono"],
+                    "headline-lg-mobile": ["Space Mono"],
+                    "headline-lg": ["Space Mono"],
+                    "body-md": ["JetBrains Mono"],
+                    "score-display": ["Space Mono"],
+                    "headline-xl": ["Space Mono"]
+            },
+            "fontSize": {
+                    "label-sm": ["12px", {"lineHeight": "1", "fontWeight": "700"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                    "headline-lg": ["32px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                    "body-md": ["16px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                    "score-display": ["64px", {"lineHeight": "1", "letterSpacing": "4px", "fontWeight": "700"}],
+                    "headline-xl": ["48px", {"lineHeight": "1.1", "letterSpacing": "-2px", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuA28u0FD2_7Zk_bKc2oHT4NLiBKhZ6_DbpzNqxA5GhqmE55acDj-iEI6YEuT4tKOa6DH0LAdhhBSE_ArTjKBGO6_c1_uPo6IsFAvlvmycXMYvPAHLALTpAgJtj2fQJxLLxs2BXgaHhW9yTEATgC5W8ZBp9VfO-eLJSb08qqDzLoFp25cUNOw6RrW2klIegs1cHe6JURxLyEDTfnbWA2UeNubnBln5wpDGVuXXM_Xvjtr-aObOfTn5AnqOIDa2o7XLCB8qN-fSpsidMM');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            image-rendering: pixelated;
+        }
+        .pixel-border {
+            box-shadow: 
+                0 -4px 0 0 #000,
+                0 4px 0 0 #000,
+                -4px 0 0 0 #000,
+                4px 0 0 0 #000;
+        }
+        .pixel-card {
+            background: rgba(19, 19, 19, 0.9);
+            border: 4px solid #47464f;
+            position: relative;
+        }
+        .pixel-card::before {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            border: 4px solid #000;
+            pointer-events: none;
+            z-index: 1;
+        }
+        .animate-blink {
+            animation: blink 1s step-end infinite;
+        }
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .glass-overlay-retro {
+            background: linear-gradient(180deg, rgba(18, 18, 69, 0.2) 0%, rgba(0, 0, 0, 0.8) 100%);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen pb-20 md:pb-0 relative overflow-x-hidden">
+<div class="relative z-10 min-h-screen">
+<!-- Top Navigation Bar -->
+<header class="bg-surface-container-highest border-b-4 border-black sticky top-0 z-50">
+<div class="flex justify-between items-center w-full px-margin-desktop max-w-container-max mx-auto h-20">
+<div class="flex items-center gap-12">
+<span class="font-headline-lg text-primary tracking-tighter uppercase">[ BASEBALL_DASH ]</span>
+<nav class="hidden md:flex items-center gap-8">
+<a class="font-label-sm text-primary border-b-4 border-primary pb-1" href="#">1. SCORES</a>
+<a class="font-label-sm text-on-surface-variant hover:text-primary transition-colors" href="#">2. STANDINGS</a>
+<a class="font-label-sm text-on-surface-variant hover:text-primary transition-colors" href="#">3. LEADERS</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<div class="relative hidden sm:block border-2 border-black bg-surface-container">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-sm">search</span>
+<input class="bg-transparent border-none py-2 pl-10 pr-4 text-sm text-on-primary placeholder-on-surface-variant focus:ring-0 w-64 font-body-md" placeholder="SEARCH_TEAM..." type="text">
+</div>
+<div class="flex items-center gap-2">
+<button class="p-2 border-2 border-black bg-surface-container hover:bg-surface-container-high">
+<span class="material-symbols-outlined text-on-surface">notifications</span>
+</button>
+<button class="p-2 border-2 border-black bg-surface-container hover:bg-surface-container-high">
+<span class="material-symbols-outlined text-on-surface">account_circle</span>
+</button>
+</div>
+</div>
+</div>
+</header>
+<main class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-8 space-y-8">
+<!-- Hero Section (Pixel Art Style) -->
+<section class="pixel-card relative h-[400px] overflow-hidden">
+<div class="absolute inset-0 bg-primary-container/20 flex items-center justify-center">
+<div class="grid grid-cols-8 gap-1 opacity-20">
+<!-- Retro grid pattern -->
+<div class="w-20 h-20 bg-primary"></div><div class="w-20 h-20 border-2 border-primary"></div>
+<div class="w-20 h-20 bg-primary"></div><div class="w-20 h-20 border-2 border-primary"></div>
+<div class="w-20 h-20 bg-primary"></div><div class="w-20 h-20 border-2 border-primary"></div>
+<div class="w-20 h-20 bg-primary"></div><div class="w-20 h-20 border-2 border-primary"></div>
+</div>
+</div>
+<div class="absolute inset-0 glass-overlay-retro flex flex-col justify-end p-8 md:p-12">
+<div class="max-w-3xl space-y-6">
+<div class="inline-block bg-tertiary text-on-tertiary px-4 py-1 border-2 border-black font-label-sm uppercase">
+                        MISSION: OMAHA 2026
+                    </div>
+<h1 class="font-headline-xl text-primary leading-tight uppercase">SEC TOURNAMENT:<br>TOP SEEDS BATTLE</h1>
+<p class="font-body-md text-on-surface-variant max-w-xl">Double-elimination showdown. Only the pixelated elites will survive the road to the College World Series.</p>
+<a class="inline-flex items-center gap-4 font-label-sm text-tertiary-fixed hover:translate-x-2 transition-transform uppercase" href="#">
+                        ENTER GAMECAST <span class="material-symbols-outlined">double_arrow</span>
+</a>
+</div>
+</div>
+<!-- Pixel UI elements -->
+<div class="absolute top-8 right-8 text-right hidden md:block">
+<div class="text-error font-score-display leading-none">00:59</div>
+<div class="text-on-surface-variant font-label-sm">TIME_REMAINING</div>
+</div>
+</section>
+<!-- Sport Selection Pills (Pixelated) -->
+<section class="flex flex-wrap items-center gap-4 py-2 overflow-x-auto no-scrollbar">
+<button class="px-8 py-3 bg-primary text-on-primary border-4 border-black font-label-sm uppercase shadow-[4px_4px_0_0_#000] active:translate-x-1 active:translate-y-1 active:shadow-none transition-all">
+                D1 COLLEGE
+            </button>
+<button class="px-8 py-3 bg-surface-container text-on-surface-variant border-4 border-black font-label-sm uppercase opacity-50 cursor-not-allowed">
+                D2/D3 [LOCKED]
+            </button>
+<button class="px-8 py-3 bg-surface-container text-on-surface border-4 border-black font-label-sm uppercase shadow-[4px_4px_0_0_#000] hover:bg-surface-container-high transition-all">
+                MLB PRO
+            </button>
+</section>
+<!-- Date Navigator & Live Status -->
+<section class="flex flex-col md:flex-row md:items-center justify-between gap-6 pixel-card p-6">
+<div class="flex items-center gap-6">
+<div class="flex items-center border-4 border-black bg-black">
+<button class="p-3 text-primary hover:bg-surface-container-high">
+<span class="material-symbols-outlined">chevron_left</span>
+</button>
+<div class="px-8 py-2 bg-surface-container flex flex-col items-center min-w-[200px]">
+<span class="font-label-sm text-tertiary uppercase">WEDNESDAY</span>
+<span class="font-headline-lg-mobile text-on-surface uppercase">MAY 27, 2026</span>
+</div>
+<button class="p-3 text-primary hover:bg-surface-container-high">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+<button class="hidden md:block font-label-sm text-primary hover:underline uppercase">
+                    [ GOTO_TODAY ]
+                </button>
+</div>
+<div class="flex items-center gap-4">
+<div class="bg-error text-on-error px-4 py-2 border-2 border-black font-label-sm flex items-center gap-2">
+<span class="w-3 h-3 bg-white animate-blink"></span>
+                    2 GAMES LIVE
+                </div>
+<div class="w-1 h-10 bg-outline-variant"></div>
+<button class="flex items-center gap-2 font-label-sm text-on-surface-variant hover:text-on-surface">
+<span class="material-symbols-outlined">filter_alt</span>
+                    FILTERS
+                </button>
+</div>
+</section>
+<!-- Game Grid -->
+<section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+<!-- Game Card 1 -->
+<div class="pixel-card p-6 flex flex-col justify-between group hover:border-primary transition-colors">
+<div class="flex justify-between items-start mb-6">
+<div class="flex items-center gap-3">
+<span class="bg-error text-on-error px-2 py-1 font-label-sm animate-blink">LIVE</span>
+<span class="text-tertiary-fixed font-label-sm">INN: 5TH</span>
+</div>
+<span class="material-symbols-outlined text-outline-variant cursor-pointer hover:text-primary">star</span>
+</div>
+<div class="space-y-6">
+<div class="flex justify-between items-center">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 bg-ucla-blue border-4 border-black flex items-center justify-center text-white font-headline-lg-mobile">U</div>
+<span class="font-headline-lg-mobile text-on-surface uppercase">UCLA</span>
+</div>
+<span class="font-score-display text-primary leading-none">03</span>
+</div>
+<div class="flex justify-between items-center">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 bg-stanford-cardinal border-4 border-black flex items-center justify-center text-white font-headline-lg-mobile">S</div>
+<span class="font-headline-lg-mobile text-on-surface uppercase">STAN</span>
+</div>
+<span class="font-score-display text-on-surface-variant leading-none">02</span>
+</div>
+</div>
+<div class="mt-8 pt-6 border-t-4 border-black flex justify-between items-center">
+<div class="flex gap-2 items-center">
+<div class="flex gap-1">
+<div class="w-3 h-3 bg-tertiary-fixed"></div>
+<div class="w-3 h-3 bg-surface-container-highest"></div>
+<div class="w-3 h-3 bg-surface-container-highest"></div>
+</div>
+<span class="font-label-sm text-on-surface-variant">B: 1-2</span>
+</div>
+<button class="font-label-sm text-primary uppercase hover:translate-x-1 transition-transform">GAMECAST &gt;</button>
+</div>
+</div>
+<!-- Game Card 2 -->
+<div class="pixel-card p-6 flex flex-col justify-between group border-error-container">
+<div class="flex justify-between items-start mb-6">
+<div class="flex items-center gap-3">
+<span class="bg-error text-on-error px-2 py-1 font-label-sm animate-blink">LIVE</span>
+<span class="text-tertiary-fixed font-label-sm">INN: 8TH</span>
+</div>
+<span class="material-symbols-outlined text-primary cursor-pointer">star</span>
+</div>
+<div class="space-y-6">
+<div class="flex justify-between items-center">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 bg-vandy-gold border-4 border-black flex items-center justify-center text-black font-headline-lg-mobile">V</div>
+<span class="font-headline-lg-mobile text-on-surface uppercase">VANDY</span>
+</div>
+<span class="font-score-display text-on-surface leading-none">05</span>
+</div>
+<div class="flex justify-between items-center">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 bg-lsu-purple border-4 border-black flex items-center justify-center text-white font-headline-lg-mobile">L</div>
+<span class="font-headline-lg-mobile text-on-surface uppercase">LSU</span>
+</div>
+<span class="font-score-display text-on-surface leading-none">05</span>
+</div>
+</div>
+<div class="mt-8 pt-6 border-t-4 border-black flex justify-between items-center">
+<div class="flex gap-2 items-center">
+<div class="flex gap-1">
+<div class="w-3 h-3 bg-secondary"></div>
+<div class="w-3 h-3 bg-secondary"></div>
+<div class="w-3 h-3 bg-surface-container-highest"></div>
+</div>
+<span class="font-label-sm text-on-surface-variant">S: 2-2</span>
+</div>
+<button class="font-label-sm text-primary uppercase">GAMECAST &gt;</button>
+</div>
+</div>
+<!-- Game Card 3 (Final) -->
+<div class="pixel-card p-6 flex flex-col justify-between bg-surface-container/90">
+<div class="flex justify-between items-start mb-6">
+<span class="bg-tertiary-fixed text-on-tertiary-fixed px-2 py-1 font-label-sm">FINAL</span>
+<span class="material-symbols-outlined text-outline-variant cursor-pointer">star</span>
+</div>
+<div class="space-y-6">
+<div class="flex justify-between items-center">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 bg-arkansas-red border-4 border-black flex items-center justify-center text-white font-headline-lg-mobile">A</div>
+<span class="font-headline-lg-mobile text-tertiary uppercase">ARK</span>
+</div>
+<span class="font-score-display text-tertiary leading-none">07</span>
+</div>
+<div class="flex justify-between items-center opacity-40">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 bg-surface-container-highest border-4 border-black flex items-center justify-center text-white font-headline-lg-mobile">F</div>
+<span class="font-headline-lg-mobile text-on-surface uppercase">FLA</span>
+</div>
+<span class="font-score-display text-on-surface leading-none">02</span>
+</div>
+</div>
+<div class="mt-8 pt-6 border-t-4 border-black text-center">
+<button class="font-label-sm text-on-surface-variant uppercase hover:text-primary">VIEW BOX_SCORE</button>
+</div>
+</div>
+<!-- Game Card 4 (Final) -->
+<div class="pixel-card p-6 flex flex-col justify-between bg-surface-container/90">
+<div class="flex justify-between items-start mb-6">
+<span class="bg-tertiary-fixed text-on-tertiary-fixed px-2 py-1 font-label-sm">FINAL</span>
+<span class="material-symbols-outlined text-outline-variant cursor-pointer">star</span>
+</div>
+<div class="space-y-6">
+<div class="flex justify-between items-center">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 bg-texas-burnt-orange border-4 border-black flex items-center justify-center text-white font-headline-lg-mobile">T</div>
+<span class="font-headline-lg-mobile text-primary uppercase">TEXAS</span>
+</div>
+<span class="font-score-display text-primary leading-none">04</span>
+</div>
+<div class="flex justify-between items-center opacity-40">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 bg-surface-container-highest border-4 border-black flex items-center justify-center text-white font-headline-lg-mobile">O</div>
+<span class="font-headline-lg-mobile text-on-surface uppercase">OKLA</span>
+</div>
+<span class="font-score-display text-on-surface leading-none">03</span>
+</div>
+</div>
+<div class="mt-8 pt-6 border-t-4 border-black text-center">
+<button class="font-label-sm text-on-surface-variant uppercase hover:text-primary">VIEW BOX_SCORE</button>
+</div>
+</div>
+<!-- Scheduled Game -->
+<div class="pixel-card p-6 flex flex-col justify-between">
+<div class="flex justify-between items-start mb-6">
+<span class="bg-primary-container text-on-primary-container px-3 py-1 font-label-sm">19:05 ET</span>
+<span class="material-symbols-outlined text-outline-variant cursor-pointer">star</span>
+</div>
+<div class="space-y-6">
+<div class="flex justify-between items-center">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 bg-surface-container-highest border-4 border-black flex items-center justify-center font-headline-lg-mobile">W</div>
+<span class="font-headline-lg-mobile text-on-surface uppercase">WAKE</span>
+</div>
+<span class="font-label-sm text-on-surface-variant uppercase">32-15</span>
+</div>
+<div class="flex justify-between items-center">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 bg-surface-container-highest border-4 border-black flex items-center justify-center font-headline-lg-mobile">D</div>
+<span class="font-headline-lg-mobile text-on-surface uppercase">DUKE</span>
+</div>
+<span class="font-label-sm text-on-surface-variant uppercase">30-18</span>
+</div>
+</div>
+<div class="mt-8 pt-6 border-t-4 border-black flex justify-between items-center">
+<span class="font-label-sm text-secondary uppercase">ESPN+</span>
+<button class="font-label-sm text-primary uppercase border-2 border-primary px-3 py-1 hover:bg-primary hover:text-on-primary transition-colors">SET_ALERT</button>
+</div>
+</div>
+</section>
+</main>
+<!-- Bottom Navigation Bar (Mobile) -->
+<nav class="fixed bottom-0 w-full flex justify-around items-center px-4 py-2 md:hidden bg-surface-container-highest border-t-4 border-black z-50">
+<a class="flex flex-col items-center justify-center bg-primary text-on-primary p-2 border-2 border-black" href="#">
+<span class="material-symbols-outlined">sports_baseball</span>
+<span class="font-label-sm text-[10px] mt-1">SCORES</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary p-2" href="#">
+<span class="material-symbols-outlined">format_list_numbered</span>
+<span class="font-label-sm text-[10px] mt-1">STANDS</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary p-2" href="#">
+<span class="material-symbols-outlined">leaderboard</span>
+<span class="font-label-sm text-[10px] mt-1">STATS</span>
+</a>
+</nav>
+</div>
+<script>
+    // Micro-interactions for retro feel
+    document.querySelectorAll('button').forEach(btn => {
+        btn.addEventListener('mousedown', () => {
+            btn.classList.add('translate-y-0.5', 'translate-x-0.5');
+        });
+        btn.addEventListener('mouseup', () => {
+            btn.classList.remove('translate-y-0.5', 'translate-x-0.5');
+        });
+    });
+
+    // Simulating Live Score Updates with high contrast colors
+    setInterval(() => {
+        const liveScores = document.querySelectorAll('.animate-blink');
+        if (liveScores.length > 0 && Math.random() > 0.9) {
+            const card = liveScores[Math.floor(Math.random() * liveScores.length)].closest('.pixel-card');
+            const scores = card.querySelectorAll('.font-score-display');
+            const target = scores[Math.floor(Math.random() * scores.length)];
+            const current = parseInt(target.textContent);
+            target.textContent = (current + 1).toString().padStart(2, '0');
+            target.classList.add('text-tertiary-fixed-dim');
+            setTimeout(() => target.classList.remove('text-tertiary-fixed-dim'), 2000);
+        }
+    }, 10000);
+</script>
+</body></html>

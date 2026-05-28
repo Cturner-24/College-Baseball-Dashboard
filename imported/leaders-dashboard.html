@@ -1,0 +1,440 @@
+<!DOCTYPE html><html class="dark" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Baseball Dashboard - Leaders</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&amp;family=JetBrains+Mono:wght@400;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<style>
+        :root {
+            --pixel-unit: 4px;
+        }
+        
+        body {
+            background-color: #131313;
+            image-rendering: pixelated;
+        }
+
+        .pixel-border {
+            box-shadow: 
+                0 calc(-1 * var(--pixel-unit)) 0 0 #000,
+                0 var(--pixel-unit) 0 0 #000,
+                calc(-1 * var(--pixel-unit)) 0 0 #000,
+                var(--pixel-unit) 0 0 #000;
+        }
+
+        .pixel-card {
+            border: var(--pixel-unit) solid #000;
+            background: rgba(28, 27, 27, 0.95);
+            position: relative;
+            backdrop-filter: blur(4px);
+        }
+
+        .pixel-card::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            border-top: var(--pixel-unit) solid rgba(255,255,255,0.1);
+            border-left: var(--pixel-unit) solid rgba(255,255,255,0.1);
+            border-bottom: var(--pixel-unit) solid rgba(0,0,0,0.3);
+            border-right: var(--pixel-unit) solid rgba(0,0,0,0.3);
+            pointer-events: none;
+        }
+
+        .pixel-card-hover {
+            transform: translate(calc(-1 * var(--pixel-unit)), calc(-1 * var(--pixel-unit)));
+            box-shadow: 
+                var(--pixel-unit) var(--pixel-unit) 0 0 #000,
+                calc(var(--pixel-unit) * 2) calc(var(--pixel-unit) * 2) 0 0 rgba(0,0,0,0.5);
+        }
+
+        .stadium-bg {
+            background-image: url('https://lh3.googleusercontent.com/aida/ADBb0ui0-hp2VjxCLE_PnEcVsbS9iSLXm7Xi_5ykOUA4NyT1E_S9Uffpg-2bkQW4GvTaBgu7zhCz-7Fdt361QLHJhzQvYJJ7_p_DZZ8FIZZi2e_enesInuZdkqFK9poLsigFutBeXZoEnmJK9HQ-VAvZIzm5gGlKqTuT8itKrH77-z9qiYKWUoCTsXYnN0HTitghC7js1ZU5eKvyA2-e-wB-vUgVBhmvLc87FwL9kd5PdeYDKGILx3bRobpqrYk');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            filter: brightness(0.8) contrast(1.1);
+        }
+
+        .dither-bg-blue { background: repeating-conic-gradient(#2774AE 0% 25%, #1e5a87 0% 50%) 50% / 4px 4px; }
+        .dither-bg-red { background: repeating-conic-gradient(#9D2235 0% 25%, #7a1a29 0% 50%) 50% / 4px 4px; }
+        .dither-bg-orange { background: repeating-conic-gradient(#BF5700 0% 25%, #944400 0% 50%) 50% / 4px 4px; }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        .retro-scroll::-webkit-scrollbar { width: 8px; }
+        .retro-scroll::-webkit-scrollbar-track { background: #000; }
+        .retro-scroll::-webkit-scrollbar-thumb { background: #c1c1fe; border: 2px solid #000; }
+    </style>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                "on-primary-container": "#7c7db5",
+                "on-surface": "#e5e2e1",
+                "surface-container-lowest": "#0e0e0e",
+                "surface-container-highest": "#353534",
+                "surface": "#131313",
+                "on-primary-fixed": "#141447",
+                "on-tertiary-fixed-variant": "#00530e",
+                "on-secondary-container": "#5b0018",
+                "on-secondary-fixed": "#40000f",
+                "on-secondary-fixed-variant": "#91002d",
+                "background": "#131313",
+                "surface-bright": "#3a3939",
+                "secondary-fixed-dim": "#ffb2b8",
+                "secondary-container": "#ff506e",
+                "tertiary-fixed": "#72ff70",
+                "on-tertiary-container": "#009722",
+                "surface-container-high": "#2a2a2a",
+                "outline": "#918f9a",
+                "inverse-on-surface": "#313030",
+                "on-secondary": "#67001d",
+                "surface-container-low": "#1c1b1b",
+                "tertiary": "#00e639",
+                "on-error-container": "#ffdad6",
+                "tertiary-fixed-dim": "#00e639",
+                "primary": "#c1c1fe",
+                "inverse-surface": "#e5e2e1",
+                "secondary": "#ffb2b8",
+                "on-primary-fixed-variant": "#414275",
+                "surface-dim": "#131313",
+                "error-container": "#93000a",
+                "error": "#ffb4ab",
+                "surface-variant": "#353534",
+                "on-surface-variant": "#c8c5d0",
+                "surface-container": "#201f1f",
+                "on-tertiary-fixed": "#002203",
+                "on-background": "#e5e2e1",
+                "primary-container": "#121245",
+                "primary-fixed": "#e1dfff",
+                "on-tertiary": "#003907",
+                "on-error": "#690005",
+                "outline-variant": "#47464f",
+                "on-primary": "#2a2b5d",
+                "primary-fixed-dim": "#c1c1fe",
+                "inverse-primary": "#58598f",
+                "surface-tint": "#c1c1fe",
+                "tertiary-container": "#001f02",
+                "secondary-fixed": "#ffdadb"
+            },
+            "fontFamily": {
+                "label-sm": ["Space Mono"],
+                "headline-xl": ["Space Mono"],
+                "body-md": ["JetBrains Mono"],
+                "score-display": ["Space Mono"],
+                "headline-lg": ["Space Mono"],
+                "nav-brand": ["Space Mono"],
+                "body-data": ["JetBrains Mono"],
+                "metadata": ["Space Mono"]
+            },
+            "fontSize": {
+                "label-sm": ["12px", {"lineHeight": "1", "fontWeight": "700"}],
+                "headline-xl": ["48px", {"lineHeight": "1.1", "letterSpacing": "-2px", "fontWeight": "700"}],
+                "body-md": ["16px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                "score-display": ["64px", {"lineHeight": "1", "letterSpacing": "4px", "fontWeight": "700"}],
+                "headline-lg": ["32px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                "nav-brand": ["24px", {"fontWeight": "700"}],
+                "body-data": ["14px", {"fontWeight": "400"}],
+                "metadata": ["10px", {"fontWeight": "700"}]
+            }
+          }
+        }
+      }
+    </script>
+</head>
+<body class="font-body-md text-on-surface bg-background retro-scroll overflow-x-hidden">
+<!-- FIXED BACKGROUND STADIUM -->
+<div class="fixed inset-0 stadium-bg z-[-1]"></div>
+<!-- TOP NAVIGATION (TopNavBar) -->
+<nav class="docked full-width top-0 sticky z-50 bg-surface-container-lowest border-b border-white/10 shadow-md h-16">
+<div class="flex justify-between items-center w-full px-8 max-w-[1200px] mx-auto h-full">
+<div class="font-nav-brand text-nav-brand text-on-primary tracking-tight">Baseball Dashboard</div>
+<div class="hidden md:flex space-x-8 items-center h-full">
+<a class="font-body-data text-body-data text-on-secondary-container opacity-80 hover:bg-white/5 transition-colors px-3 py-2" href="#">Scores</a>
+<a class="font-body-data text-body-data text-on-secondary-container opacity-80 hover:bg-white/5 transition-colors px-3 py-2" href="#">Standings</a>
+<a class="font-body-data text-body-data text-primary-fixed-dim font-bold border-b-2 border-primary-fixed-dim pb-1" href="#">Leaders</a>
+</div>
+<div class="flex items-center space-x-4">
+<span class="material-symbols-outlined text-on-surface cursor-pointer hover:bg-white/10 p-2">notifications</span>
+<span class="material-symbols-outlined text-on-surface cursor-pointer hover:bg-white/10 p-2">account_circle</span>
+</div>
+</div>
+</nav>
+<!-- MAIN CONTENT CANVAS -->
+<main class="max-w-[1200px] mx-auto px-4 md:px-8 py-8">
+<!-- HEADER & DATE NAVIGATOR -->
+<header class="flex flex-col items-center mb-12 space-y-6">
+<h1 class="font-headline-xl text-headline-xl text-center text-primary-fixed drop-shadow-[4px_4px_0px_#000]" style="opacity: 1;">SEASON LEADERS</h1>
+<div class="flex items-center justify-center space-x-6 bg-black/80 px-6 py-3 pixel-border">
+<button class="material-symbols-outlined text-primary-fixed hover:text-white transition-colors">chevron_left</button>
+<div class="font-headline-lg text-headline-lg text-on-primary-fixed-variant tracking-widest">AUG 14, 2024</div>
+<button class="material-symbols-outlined text-primary-fixed hover:text-white transition-colors">chevron_right</button>
+</div>
+</header>
+<!-- LEADERS BENTO GRID -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+<!-- HOVER STATE CARD -->
+<div class="pixel-card pixel-card-hover group cursor-pointer transition-all duration-200">
+<div class="h-20 dither-bg-blue flex items-end justify-between px-4 pb-2 border-b-4 border-black">
+<div class="bg-black p-1 pixel-border">
+<span class="text-white font-label-sm text-label-sm">AVG LEADER</span>
+</div>
+<div class="text-white font-score-display text-[24px] leading-none">.342</div>
+</div>
+<div class="p-4 flex flex-col items-center -mt-12">
+<div class="relative mb-3">
+<div class="w-24 h-24 rounded-full border-4 border-[#2774AE] overflow-hidden bg-surface-container-high pixel-border">
+<img alt="Player Headshot" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBizfi0ZxPaZN_2_Xzncl2IlSeo_UhlHvpAcxFrSgWFTWxf7BLl-n5oJLKN-uLbLr1M7EOqdQUsA185dc3UqQaQpHndyFRcq5ivitiXHeXZSwMU0gQ_7iRAPxJqKChekh6b8k-0iOVZEe-E8tYukktWwqSPmamDeyKnIrRJW_Vo2j8phskgtsHhU8EgiHfMFKZ44pL1AWCeU4T1JvEKJOGj_SlwBD9ZgcwqYCimF3fZcFMSiL6w0xILg2TPRrJF3RbwkDGjFROhIEBX">
+</div>
+<div class="absolute -bottom-2 -right-2 bg-black px-2 py-1 pixel-border">
+<span class="text-white font-label-sm text-label-sm">#13</span>
+</div>
+</div>
+<h3 class="font-headline-lg text-[20px] text-center mb-1">R. ACUNA JR.</h3>
+<p class="font-label-sm text-on-surface-variant text-center mb-4">ATLANTA BRAVES • RF</p>
+<div class="w-full bg-black p-3 pixel-border">
+<p class="font-body-data text-[12px] text-primary text-center tracking-tighter">4-5, HR, 3 RBI, 2 R, SB</p>
+</div>
+</div>
+</div>
+<!-- CARD 2: RED THEME -->
+<div class="pixel-card hover:bg-surface-container-high transition-colors">
+<div class="h-20 dither-bg-red flex items-end justify-between px-4 pb-2 border-b-4 border-black">
+<div class="bg-black p-1 pixel-border">
+<span class="text-white font-label-sm text-label-sm">HR LEADER</span>
+</div>
+<div class="text-white font-score-display text-[24px] leading-none">42</div>
+</div>
+<div class="p-4 flex flex-col items-center -mt-12">
+<div class="relative mb-3">
+<div class="w-24 h-24 rounded-full border-4 border-[#9D2235] overflow-hidden bg-surface-container-high pixel-border">
+<img alt="Player Headshot" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCtewrgGkSW_KVkDtxiqK01p8H4j8mwfeRwCDyPOiOgb80K0fgyJRcL_WqA1G7MGvL095XTjU0C5zaIbgpe5K97SoCTnLeuabGwO5RSced8m1YfsYNn0Cdce8IB-AYgFE36cLCTPxXeEnA2mcpvViHozEdmettR4PUxPxDsrudc_tDCKLdv-JvU2yk_ONbc-ryI7Z3Uxi7LZtyPRZmRGpRIeuR0NmkbeB0MdrjZ-hmEGfZyaT4f8vvko4DmSsVZpuavgk8PQoRMa5p3">
+</div>
+</div>
+<h3 class="font-headline-lg text-[20px] text-center mb-1">S. OHTANI</h3>
+<p class="font-label-sm text-on-surface-variant text-center mb-4">LA DODGERS • DH/P</p>
+<div class="w-full bg-black p-3 pixel-border">
+<p class="font-body-data text-[12px] text-tertiary text-center tracking-tighter">2-4, 2 HR, 4 RBI, BB</p>
+</div>
+</div>
+</div>
+<!-- CARD 3: ORANGE THEME -->
+<div class="pixel-card hover:bg-surface-container-high transition-colors">
+<div class="h-20 dither-bg-orange flex items-end justify-between px-4 pb-2 border-b-4 border-black">
+<div class="bg-black p-1 pixel-border">
+<span class="text-white font-label-sm text-label-sm">RBI LEADER</span>
+</div>
+<div class="text-white font-score-display text-[24px] leading-none">98</div>
+</div>
+<div class="p-4 flex flex-col items-center -mt-12">
+<div class="relative mb-3">
+<div class="w-24 h-24 rounded-full border-4 border-[#BF5700] overflow-hidden bg-surface-container-high pixel-border">
+<img alt="Player Headshot" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCyUmb_TyWHPKwmIBTO7Oj1ID2XWzVbEQGHicaM0O98KElBAdal9SG3dqkuMIFqKJvp9BEZ7s7re05nsKDobW2hMGgISY6Ax33AVFIK4TyeqSP6pkpWZsdgcwzogO04jpA9rKN3bEsSRxxY5KWtMvs8DlpeX8yqFpX-WQ82S7Vtbd7xW62dOPw1EVk_LCaEgTmnjcCkFgX-2lxyKaeCj3pjoJuqJNtZi47hvIUnbN1SEtet4pEE2ypHx0eiTwQGeHjtiwAVrs_Bjk4U">
+</div>
+</div>
+<h3 class="font-headline-lg text-[20px] text-center mb-1">A. JUDGE</h3>
+<p class="font-label-sm text-on-surface-variant text-center mb-4">NY YANKEES • CF</p>
+<div class="w-full bg-black p-3 pixel-border">
+<p class="font-body-data text-[12px] text-secondary text-center tracking-tighter">3-4, 2B, 3 RBI, R</p>
+</div>
+</div>
+</div>
+<!-- CARD 4 -->
+<div class="pixel-card hover:bg-surface-container-high transition-colors">
+<div class="h-20 dither-bg-blue flex items-end justify-between px-4 pb-2 border-b-4 border-black">
+<div class="bg-black p-1 pixel-border">
+<span class="text-white font-label-sm text-label-sm">ERA LEADER</span>
+</div>
+<div class="text-white font-score-display text-[24px] leading-none">2.14</div>
+</div>
+<div class="p-4 flex flex-col items-center -mt-12">
+<div class="relative mb-3">
+<div class="w-24 h-24 rounded-full border-4 border-[#2774AE] overflow-hidden bg-surface-container-high pixel-border">
+<img alt="Player Headshot" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCgwQp1R640S-QDrHAXE4gGIKtxLEqEMMrdRzDgiYQ6TDpcgb901tVFHNRTT9PYYveY3dOe-gOaOAtNMVP5xt-ddm3IrwRBBIXFOQmjna9vv-YGcIBqXHlAEU0zOZs4R7C-WvQn9VM_uBpSJutDYqpOngBe9MsztSdxSHNLMbk7HQX0nKZjmpvF7LtaUTzSTdoChTSThHUUgu0LGowCCGsoYB1-LmHWx2GkDAbdf-v6yF6-eRnldFfrhJchSTpHHAWKkkEdFQ-NOsl9">
+</div>
+</div>
+<h3 class="font-headline-lg text-[20px] text-center mb-1">G. COLE</h3>
+<p class="font-label-sm text-on-surface-variant text-center mb-4">NY YANKEES • SP</p>
+<div class="w-full bg-black p-3 pixel-border">
+<p class="font-body-data text-[12px] text-primary text-center tracking-tighter">7.0 IP, 2 H, 0 ER, 11 K</p>
+</div>
+</div>
+</div>
+<!-- CARD 5 -->
+<div class="pixel-card hover:bg-surface-container-high transition-colors">
+<div class="h-20 dither-bg-red flex items-end justify-between px-4 pb-2 border-b-4 border-black">
+<div class="bg-black p-1 pixel-border">
+<span class="text-white font-label-sm text-label-sm">SO LEADER</span>
+</div>
+<div class="text-white font-score-display text-[24px] leading-none">215</div>
+</div>
+<div class="p-4 flex flex-col items-center -mt-12">
+<div class="relative mb-3">
+<div class="w-24 h-24 rounded-full border-4 border-[#9D2235] overflow-hidden bg-surface-container-high pixel-border">
+<img alt="Player Headshot" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDWtPV5Gm2ZKwlWT9yhULJq-YVFFS41FSDf29UAGqe5-KUgLUvUyQU2XXqZuKSjPrrnELNX1b56Uh81yw1yR6ApT6Tzpebumotz5dQ5_N-svKewsqudUIUwVO1vKSnA2fhiDk8rOpEOCSJkLt1v0d_-KQLrrw51dkYOvpNT5KuQoA3kIW1vplykg0LNF7cjkVthd3z_DDX-uAxGmlBXzV-B6tydG0Er8z089TxG3rpZMxfjGVSGMt1RX_A-oF5onQAR44Y2ARNrjmrP">
+</div>
+</div>
+<h3 class="font-headline-lg text-[20px] text-center mb-1">S. STRIDER</h3>
+<p class="font-label-sm text-on-surface-variant text-center mb-4">ATLANTA BRAVES • SP</p>
+<div class="w-full bg-black p-3 pixel-border">
+<p class="font-body-data text-[12px] text-tertiary text-center tracking-tighter">6.0 IP, 4 H, 1 ER, 13 K</p>
+</div>
+</div>
+</div>
+<!-- CARD 6 -->
+<div class="pixel-card hover:bg-surface-container-high transition-colors">
+<div class="h-20 dither-bg-orange flex items-end justify-between px-4 pb-2 border-b-4 border-black">
+<div class="bg-black p-1 pixel-border">
+<span class="text-white font-label-sm text-label-sm">SB LEADER</span>
+</div>
+<div class="text-white font-score-display text-[24px] leading-none">65</div>
+</div>
+<div class="p-4 flex flex-col items-center -mt-12">
+<div class="relative mb-3">
+<div class="w-24 h-24 rounded-full border-4 border-[#BF5700] overflow-hidden bg-surface-container-high pixel-border">
+<img alt="Player Headshot" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAYgMo2tKuPhSfko1D6a6wY8iS_e_9MmR-tbFTZrlXM7dCSBNWCYJ6oNZewQX-TZrxrp5Dff3ebwK0pnTG5kBUlr9lRukmJrzmDyRChBFJjKxv8JS_vsC7Mqj4wBYaAius25zUYY774Lc3adMGxFcvIQckf8Vd_JPxb77EQRkBGh8tMQjFVsN0nXKdunmuK--ts8Jjw55PT9Cq-xSSIDFfXjz24XUheKS_fjkYHkQyXD6ROahwBO5ETTKaKPkhoPHxgddFeQxqb48xY">
+</div>
+</div>
+<h3 class="font-headline-lg text-[20px] text-center mb-1">C. CARROLL</h3>
+<p class="font-label-sm text-on-surface-variant text-center mb-4">AZ D-BACKS • LF</p>
+<div class="w-full bg-black p-3 pixel-border">
+<p class="font-body-data text-[12px] text-secondary text-center tracking-tighter">1-3, BB, 3 SB, 2 R</p>
+</div>
+</div>
+</div>
+<!-- CARD 7 -->
+<div class="pixel-card hover:bg-surface-container-high transition-colors">
+<div class="h-20 dither-bg-blue flex items-end justify-between px-4 pb-2 border-b-4 border-black">
+<div class="bg-black p-1 pixel-border">
+<span class="text-white font-label-sm text-label-sm">OPS LEADER</span>
+</div>
+<div class="text-white font-score-display text-[24px] leading-none">1.09</div>
+</div>
+<div class="p-4 flex flex-col items-center -mt-12">
+<div class="relative mb-3">
+<div class="w-24 h-24 rounded-full border-4 border-[#2774AE] overflow-hidden bg-surface-container-high pixel-border">
+<img alt="Player Headshot" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAnUdL-T1f6cSGbSmA1KH45dG2CBGuVSB3yJ9O6l18EqfsLZ2cRqD0vVR-mj4erx0MrGwaxh4PpUvTw-C-KYjGyhH9b4o_ToQpzkKo9OItArHTE6hK9iInVweJG_eq0Bi2JtOCKFpDY-69LAIAnFxayAAWY85JPwEOdRj4feT2QWXNO99Wt_vzoNLh1s5R1ucpeHxUozKW1Z5jNO-NphrWOx18-rkcrkksTkom_yzOpNI7NJvx9B-H2lYqeLojSe6eygjeW4sDpvWJ7">
+</div>
+</div>
+<h3 class="font-headline-lg text-[20px] text-center mb-1">F. FREEMAN</h3>
+<p class="font-label-sm text-on-surface-variant text-center mb-4">LA DODGERS • 1B</p>
+<div class="w-full bg-black p-3 pixel-border">
+<p class="font-body-data text-[12px] text-primary text-center tracking-tighter">2-4, HR, 2B, 3 RBI</p>
+</div>
+</div>
+</div>
+<!-- CARD 8 -->
+<div class="pixel-card hover:bg-surface-container-high transition-colors">
+<div class="h-20 dither-bg-red flex items-end justify-between px-4 pb-2 border-b-4 border-black">
+<div class="bg-black p-1 pixel-border">
+<span class="text-white font-label-sm text-label-sm">WINS LEADER</span>
+</div>
+<div class="text-white font-score-display text-[24px] leading-none">18</div>
+</div>
+<div class="p-4 flex flex-col items-center -mt-12">
+<div class="relative mb-3">
+<div class="w-24 h-24 rounded-full border-4 border-[#9D2235] overflow-hidden bg-surface-container-high pixel-border">
+<img alt="Player Headshot" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB9bNcrVJpKO5qPY3dHmjNVePI9fyT7QHLh8KbjH-O9ox8jEE78YdND6pFUPXtiFNyXr9tcZwsvr4TlvQndNfjceFFKn_uWljZ1hDzVkPUP0_0k6N4DYr7RGrjyMXucfkuu4txuiiS8amPq9vqzF08w2qw0injVg52s1DtsPjafQ5_YHLDbKVJCXHmpG30P4bNuMS0agHe6AKdabt2-dRZIwa_JmE7a7XQB0crASLgjo1Adh-8mLN81TEF5BOsSzeQLLHbbOG40WEAC">
+</div>
+</div>
+<h3 class="font-headline-lg text-[20px] text-center mb-1">J. VERLANDER</h3>
+<p class="font-label-sm text-on-surface-variant text-center mb-4">HOU ASTROS • SP</p>
+<div class="w-full bg-black p-3 pixel-border">
+<p class="font-body-data text-[12px] text-tertiary text-center tracking-tighter">8.0 IP, 3 H, 0 ER, 7 K</p>
+</div>
+</div>
+</div>
+<!-- CARD 9 -->
+<div class="pixel-card hover:bg-surface-container-high transition-colors">
+<div class="h-20 dither-bg-orange flex items-end justify-between px-4 pb-2 border-b-4 border-black">
+<div class="bg-black p-1 pixel-border">
+<span class="text-white font-label-sm text-label-sm">RUNS LEADER</span>
+</div>
+<div class="text-white font-score-display text-[24px] leading-none">125</div>
+</div>
+<div class="p-4 flex flex-col items-center -mt-12">
+<div class="relative mb-3">
+<div class="w-24 h-24 rounded-full border-4 border-[#BF5700] overflow-hidden bg-surface-container-high pixel-border">
+<img alt="Player Headshot" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCY7Erbs6dMd8nwRPEwG7oNTP0nGsHYFb2ssShySv8LrcZ_sXFUgo_iA0eWoBA8_qSKixL6KFN3fM2BUKKdwznid4cqjWmsuMqSuYKxfP4FWahjILyAEU3p_he_SNKnyy3ynTuhEAUxGV1Kv3927Bf_H8gt2Ia4RGBC2RoRl-XhSMJuUMteuMhUZRicZ7gdSYMHAfrnaKGBOtYlgKOFkrnvWS1Eo50BFdlmAUmzUUinOShhh7ovXIrwm553CMKspBPoHngoS7hR0hp9">
+</div>
+</div>
+<h3 class="font-headline-lg text-[20px] text-center mb-1">M. BETTS</h3>
+<p class="font-label-sm text-on-surface-variant text-center mb-4">LA DODGERS • RF</p>
+<div class="w-full bg-black p-3 pixel-border">
+<p class="font-body-data text-[12px] text-secondary text-center tracking-tighter">4-5, 3 R, HR, RBI</p>
+</div>
+</div>
+</div>
+<!-- CARD 10 -->
+<div class="pixel-card hover:bg-surface-container-high transition-colors">
+<div class="h-20 dither-bg-blue flex items-end justify-between px-4 pb-2 border-b-4 border-black">
+<div class="bg-black p-1 pixel-border">
+<span class="text-white font-label-sm text-label-sm">SAVE LEADER</span>
+</div>
+<div class="text-white font-score-display text-[24px] leading-none">38</div>
+</div>
+<div class="p-4 flex flex-col items-center -mt-12">
+<div class="relative mb-3">
+<div class="w-24 h-24 rounded-full border-4 border-[#2774AE] overflow-hidden bg-surface-container-high pixel-border">
+<img alt="Player Headshot" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAodGj9z5oWEmtGfH5fnQVUl28fhsLDGeFzXN2HzoM8q34kmGLnvSEP9OCYcwId2NQ6sZFsq-KJ5sYwkniG1gyXSqK8NdkpCNLcoQMyUwQnGEBb0mVGocBa-Ho9Zh0FXKCaHERXrBA9fclileDVItzk_x5vpV47xXjlhwt4PzqN0K7ms1i4akkuJUQdQYW612FV5JufMuQ5lefGYyzWyFM5IMGtjqTPU_s6fnu_eH_1z-7SsuNoAvvIbborCwspf11No-7btQa3wvvI">
+</div>
+</div>
+<h3 class="font-headline-lg text-[20px] text-center mb-1">E. DIAZ</h3>
+<p class="font-label-sm text-on-surface-variant text-center mb-4">NY METS • CP</p>
+<div class="w-full bg-black p-3 pixel-border">
+<p class="font-body-data text-[12px] text-primary text-center tracking-tighter">1.0 IP, 0 H, 0 ER, 3 K</p>
+</div>
+</div>
+</div>
+</div>
+<!-- ATMOSPHERIC FOOTER -->
+<div class="mt-16 flex flex-col items-center opacity-40">
+<div class="bg-black p-2 pixel-border mb-4">
+<span class="font-label-sm text-label-sm text-on-surface tracking-[0.2em]">16-BIT DATA ENGINE ACTIVE</span>
+</div>
+<div class="flex space-x-2">
+<div class="w-4 h-4 bg-tertiary animate-pulse"></div>
+<div class="w-4 h-4 bg-secondary animate-pulse delay-75"></div>
+<div class="w-4 h-4 bg-primary animate-pulse delay-150"></div>
+</div>
+</div>
+</main>
+<!-- BOTTOM NAVBAR (BottomNavBar - Mobile Only) -->
+<nav class="fixed bottom-0 w-full flex justify-around items-center px-4 py-2 md:hidden bg-surface-container-lowest border-t border-white/10 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] z-50">
+<a class="flex flex-col items-center justify-center text-on-secondary-container opacity-70 hover:opacity-100 transition-transform active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined">sports_baseball</span>
+<span class="font-metadata text-metadata uppercase tracking-wider">Scores</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-secondary-container opacity-70 hover:opacity-100 transition-transform active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined">format_list_numbered</span>
+<span class="font-metadata text-metadata uppercase tracking-wider">Standings</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-xl px-4 py-1.5 transition-transform active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined">leaderboard</span>
+<span class="font-metadata text-metadata uppercase tracking-wider">Leaders</span>
+</a>
+</nav>
+<!-- INTERACTIVE SCRIPTS -->
+<script>
+        // Simple pixel flicker effect for headers
+        document.querySelectorAll('.font-headline-xl').forEach(header => {
+            setInterval(() => {
+                header.style.opacity = Math.random() > 0.98 ? '0.8' : '1';
+            }, 100);
+        });
+
+        // Dynamic Card Elevation logic is handled via CSS classes
+        // but we can add a simple "Coin Pick-up" sound mock-effect logic if desired
+        document.querySelectorAll('.pixel-card').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                // Potential for JS triggered audio or subtle screen shake
+            });
+        });
+    </script>
+</body></html>

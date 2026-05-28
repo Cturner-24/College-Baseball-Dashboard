@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Baseball Dashboard - Game Events</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&amp;family=Space+Mono:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .pixel-border {
+            box-shadow: 
+                inset 2px 2px 0px 0px rgba(255,255,255,0.1),
+                inset -2px -2px 0px 0px rgba(0,0,0,0.5),
+                0 0 0 2px #000;
+        }
+        .pixel-border-primary {
+            box-shadow: 
+                inset 2px 2px 0px 0px rgba(255,255,255,0.3),
+                inset -2px -2px 0px 0px rgba(0,0,0,0.4),
+                0 0 0 2px #c1c1fe;
+        }
+        .retro-bevel {
+            border-top: 2px solid rgba(255,255,255,0.2);
+            border-left: 2px solid rgba(255,255,255,0.2);
+            border-right: 2px solid rgba(0,0,0,0.4);
+            border-bottom: 2px solid rgba(0,0,0,0.4);
+        }
+        .active-pressed:active {
+            transform: translate(2px, 2px);
+            box-shadow: none;
+        }
+        .bg-grid-pattern {
+            background-image: linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px),
+                              linear-gradient(to bottom, rgba(255,255,255,0.05) 1px, transparent 1px);
+            background-size: 4px 4px;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-surface": "#e5e2e1",
+                    "error-container": "#93000a",
+                    "on-tertiary-fixed": "#002203",
+                    "on-primary-container": "#7c7db5",
+                    "inverse-primary": "#58598f",
+                    "on-error": "#690005",
+                    "primary-container": "#121245",
+                    "primary": "#c1c1fe",
+                    "inverse-on-surface": "#313030",
+                    "secondary-container": "#ff506e",
+                    "on-secondary": "#67001d",
+                    "secondary": "#ffb2b8",
+                    "surface-container-high": "#2a2a2a",
+                    "surface": "#131313",
+                    "tertiary-fixed": "#72ff70",
+                    "surface-bright": "#3a3939",
+                    "primary-fixed": "#e1dfff",
+                    "on-error-container": "#ffdad6",
+                    "primary-fixed-dim": "#c1c1fe",
+                    "on-tertiary-container": "#009722",
+                    "surface-dim": "#131313",
+                    "on-primary-fixed-variant": "#414275",
+                    "tertiary-container": "#001f02",
+                    "tertiary": "#00e639",
+                    "on-background": "#e5e2e1",
+                    "surface-variant": "#353534",
+                    "on-surface-variant": "#c8c5d0",
+                    "on-secondary-fixed": "#40000f",
+                    "surface-container-low": "#1c1b1b",
+                    "on-secondary-fixed-variant": "#91002d",
+                    "outline-variant": "#47464f",
+                    "surface-container-highest": "#353534",
+                    "tertiary-fixed-dim": "#00e639",
+                    "on-tertiary": "#003907",
+                    "background": "#131313",
+                    "inverse-surface": "#e5e2e1",
+                    "on-tertiary-fixed-variant": "#00530e",
+                    "surface-tint": "#c1c1fe",
+                    "secondary-fixed": "#ffdadb",
+                    "on-secondary-container": "#5b0018",
+                    "surface-container-lowest": "#0e0e0e",
+                    "error": "#ffb4ab",
+                    "secondary-fixed-dim": "#ffb2b8",
+                    "outline": "#918f9a",
+                    "surface-container": "#201f1f",
+                    "on-primary-fixed": "#141447",
+                    "on-primary": "#2a2b5d",
+                    "navy-mid": "#1a1a40"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0px",
+                    "lg": "0px",
+                    "xl": "0px",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "margin-desktop": "32px",
+                    "pixel_unit": "4px",
+                    "margin-mobile": "16px",
+                    "gutter": "16px",
+                    "container-max": "1200px"
+            },
+            "fontFamily": {
+                    "body-md": ["JetBrains Mono"],
+                    "headline-lg-mobile": ["Space Mono"],
+                    "headline-lg": ["Space Mono"],
+                    "headline-xl": ["Space Mono"],
+                    "score-display": ["Space Mono"],
+                    "label-sm": ["Space Mono"],
+                    "nav-brand": ["Space Mono"],
+                    "body-data": ["JetBrains Mono"],
+                    "metadata": ["Space Mono"]
+            },
+            "fontSize": {
+                    "body-md": ["16px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                    "headline-lg": ["32px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                    "headline-xl": ["48px", {"lineHeight": "1.1", "letterSpacing": "-2px", "fontWeight": "700"}],
+                    "score-display": ["64px", {"lineHeight": "1", "letterSpacing": "4px", "fontWeight": "700"}],
+                    "label-sm": ["12px", {"lineHeight": "1", "fontWeight": "700"}],
+                    "nav-brand": ["20px", {"lineHeight": "1", "fontWeight": "800"}],
+                    "body-data": ["14px", {"lineHeight": "1.4", "fontWeight": "400"}],
+                    "metadata": ["10px", {"lineHeight": "1", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+</head>
+<body class="bg-background text-on-surface font-body-md overflow-x-hidden">
+<!-- TopNavBar -->
+<header class="bg-navy-mid border-b border-white/10 docked full-width top-0 sticky z-50 shadow-md h-16">
+<div class="flex justify-between items-center w-full px-8 max-w-container-max mx-auto h-full">
+<div class="flex items-center gap-8">
+<span class="font-nav-brand text-nav-brand text-on-primary tracking-tight">Baseball Dashboard</span>
+<nav class="hidden md:flex gap-6">
+<a class="text-primary-fixed-dim font-bold border-b-2 border-primary-fixed-dim pb-1 font-body-data text-body-data" href="#">Scores</a>
+<a class="text-on-secondary-container hover:text-on-primary opacity-80 transition-colors font-body-data text-body-data" href="#">Standings</a>
+<a class="text-on-secondary-container hover:text-on-primary opacity-80 transition-colors font-body-data text-body-data" href="#">Leaders</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-on-primary hover:bg-white/5 transition-colors p-2">notifications</button>
+<button class="material-symbols-outlined text-on-primary hover:bg-white/5 transition-colors p-2">account_circle</button>
+</div>
+</div>
+</header>
+<main class="relative min-h-screen">
+<!-- Background Layer -->
+<div class="fixed inset-0 z-0">
+<img alt="SNES Style Baseball Stadium" class="w-full h-full object-cover opacity-40" src="https://lh3.googleusercontent.com/aida/ADBb0ui0-hp2VjxCLE_PnEcVsbS9iSLXm7Xi_5ykOUA4NyT1E_S9Uffpg-2bkQW4GvTaBgu7zhCz-7Fdt361QLHJhzQvYJJ7_p_DZZ8FIZZi2e_enesInuZdkqFK9poLsigFutBeXZoEnmJK9HQ-VAvZIzm5gGlKqTuT8itKrH77-z9qiYKWUoCTsXYnN0HTitghC7js1ZU5eKvyA2-e-wB-vUgVBhmvLc87FwL9kd5PdeYDKGILx3bRobpqrYk"/>
+<div class="absolute inset-0 bg-gradient-to-b from-background/90 via-background/70 to-background/90 backdrop-blur-[1px]"></div>
+<div class="absolute inset-0 bg-grid-pattern opacity-20"></div>
+</div>
+<div class="relative z-10 max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-8">
+<!-- Matchup Header -->
+<section class="mb-8 pixel-border bg-surface-container-highest p-4 md:p-6 retro-bevel">
+<div class="flex flex-col md:flex-row justify-between items-center gap-6">
+<div class="flex items-center gap-6">
+<div class="text-center">
+<div class="font-headline-lg-mobile md:font-headline-lg text-primary uppercase">UCLA</div>
+<div class="text-on-surface-variant font-label-sm">BRUINS</div>
+</div>
+<div class="bg-black px-6 py-2 pixel-border">
+<span class="font-score-display text-score-display text-secondary">5</span>
+<span class="mx-2 font-headline-lg text-on-surface-variant opacity-30">-</span>
+<span class="font-score-display text-score-display text-tertiary">3</span>
+</div>
+<div class="text-center">
+<div class="font-headline-lg-mobile md:font-headline-lg text-primary uppercase">VANDY</div>
+<div class="text-on-surface-variant font-label-sm">COMMODORES</div>
+</div>
+</div>
+<div class="flex flex-col items-center md:items-end">
+<div class="bg-primary-container text-primary font-label-sm px-4 py-1 mb-2 pixel-border">
+                            TOP 3RD
+                        </div>
+<div class="flex gap-2">
+<div class="flex flex-col items-center">
+<span class="font-label-sm text-on-surface-variant">B</span>
+<div class="flex gap-1">
+<div class="w-3 h-3 bg-secondary pixel-border"></div>
+<div class="w-3 h-3 bg-secondary pixel-border"></div>
+<div class="w-3 h-3 bg-surface-variant pixel-border"></div>
+</div>
+</div>
+<div class="flex flex-col items-center">
+<span class="font-label-sm text-on-surface-variant">S</span>
+<div class="flex gap-1">
+<div class="w-3 h-3 bg-tertiary pixel-border"></div>
+<div class="w-3 h-3 bg-surface-variant pixel-border"></div>
+</div>
+</div>
+<div class="flex flex-col items-center">
+<span class="font-label-sm text-on-surface-variant">O</span>
+<div class="flex gap-1">
+<div class="w-3 h-3 bg-error-container pixel-border"></div>
+<div class="w-3 h-3 bg-surface-variant pixel-border"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+<!-- Main Feed -->
+<div class="lg:col-span-8">
+<div class="flex justify-between items-center mb-6">
+<h2 class="font-headline-lg-mobile text-on-surface uppercase tracking-wider">Play-By-Play</h2>
+<div class="flex gap-4">
+<button class="pixel-border-primary bg-primary text-on-primary px-4 py-2 font-label-sm uppercase active-pressed flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px]">refresh</span> Refresh
+                            </button>
+<button class="pixel-border bg-surface-container-high text-on-surface px-4 py-2 font-label-sm uppercase active-pressed flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px]">filter_list</span> Inning
+                            </button>
+</div>
+</div>
+<div class="space-y-4">
+<!-- Event Entry: Scoring Play -->
+<div class="pixel-border bg-tertiary-container/30 retro-bevel p-4 border-l-4 border-l-tertiary">
+<div class="flex gap-4 items-start">
+<div class="w-12 h-12 bg-black flex items-center justify-center shrink-0 pixel-border border-tertiary">
+<span class="material-symbols-outlined text-tertiary" style="font-variation-settings: 'FILL' 1;">diamond</span>
+</div>
+<div class="flex-grow">
+<div class="flex justify-between mb-1">
+<span class="font-label-sm text-tertiary">TOP 3RD • 2 OUTS</span>
+<span class="font-label-sm text-on-surface-variant">4:12 PM</span>
+</div>
+<p class="font-body-md text-on-surface">
+<strong class="text-tertiary">Morrison</strong> hits a 2-run <span class="text-tertiary underline decoration-dotted">Homer</span> to left field. UCLA lead extended!
+                                    </p>
+<div class="mt-2 flex gap-2">
+<span class="bg-black/40 text-[10px] px-2 py-0.5 font-label-sm border border-white/5">EV: 104 MPH</span>
+<span class="bg-black/40 text-[10px] px-2 py-0.5 font-label-sm border border-white/5">DIST: 412 FT</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Event Entry: Strikeout -->
+<div class="pixel-border bg-surface-container-low retro-bevel p-4 border-l-4 border-l-secondary-container">
+<div class="flex gap-4 items-start">
+<div class="w-12 h-12 bg-black flex items-center justify-center shrink-0 pixel-border border-secondary-container">
+<span class="material-symbols-outlined text-secondary-container" style="font-variation-settings: 'FILL' 1;">local_fire_department</span>
+</div>
+<div class="flex-grow">
+<div class="flex justify-between mb-1">
+<span class="font-label-sm text-secondary-container">TOP 3RD • 1 OUT</span>
+<span class="font-label-sm text-on-surface-variant">4:08 PM</span>
+</div>
+<p class="font-body-md text-on-surface">
+<strong class="text-secondary-container">Thompson</strong> strikes out <strong class="text-on-surface">Davis</strong> swinging on a 98 MPH fastball.
+                                    </p>
+</div>
+</div>
+</div>
+<!-- Event Entry: Hit -->
+<div class="pixel-border bg-surface-container-low retro-bevel p-4 border-l-4 border-l-primary">
+<div class="flex gap-4 items-start">
+<div class="w-12 h-12 bg-black flex items-center justify-center shrink-0 pixel-border border-primary">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">sports_baseball</span>
+</div>
+<div class="flex-grow">
+<div class="flex justify-between mb-1">
+<span class="font-label-sm text-primary">TOP 3RD • 0 OUTS</span>
+<span class="font-label-sm text-on-surface-variant">4:05 PM</span>
+</div>
+<p class="font-body-md text-on-surface">
+<strong class="text-primary">Chen</strong> doubles to deep center. Runner on second.
+                                    </p>
+</div>
+</div>
+</div>
+<!-- Inning Break -->
+<div class="flex items-center gap-4 py-2">
+<div class="h-[2px] bg-white/10 flex-grow"></div>
+<span class="font-label-sm text-on-surface-variant uppercase tracking-[0.2em]">End of 2nd Inning</span>
+<div class="h-[2px] bg-white/10 flex-grow"></div>
+</div>
+<!-- Event Entry: Simple Out -->
+<div class="pixel-border bg-surface-container-low retro-bevel p-4 border-l-4 border-l-outline">
+<div class="flex gap-4 items-start opacity-70">
+<div class="w-12 h-12 bg-black flex items-center justify-center shrink-0 pixel-border border-outline">
+<span class="material-symbols-outlined text-outline">backspace</span>
+</div>
+<div class="flex-grow">
+<div class="flex justify-between mb-1">
+<span class="font-label-sm text-outline">BOT 2ND • 3 OUTS</span>
+<span class="font-label-sm text-on-surface-variant">3:58 PM</span>
+</div>
+<p class="font-body-md text-on-surface">
+<strong class="text-on-surface">Smith</strong> flies out to right field. Side retired.
+                                    </p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Sidebar Panels -->
+<aside class="lg:col-span-4 space-y-8">
+<!-- HUD: Batting Order -->
+<div class="pixel-border bg-surface-container-high retro-bevel overflow-hidden">
+<div class="bg-primary text-on-primary px-4 py-2 font-label-sm uppercase flex items-center justify-between">
+<span>Current Batter</span>
+<span class="material-symbols-outlined text-[18px]">person</span>
+</div>
+<div class="p-4 space-y-4">
+<div class="flex items-center gap-4">
+<div class="w-16 h-16 bg-navy-mid pixel-border-primary shrink-0 relative overflow-hidden">
+<img alt="Player Portrait" class="w-full h-full object-cover" data-alt="A 16-bit pixel art portrait of a professional baseball player with a serious expression, wearing a navy and gold uniform. The style is reminiscent of 1990s arcade sports games, with chunky pixels and a limited vibrant color palette. The background is a flat navy blue." src="https://lh3.googleusercontent.com/aida-public/AB6AXuASg300GqmRIrFF8TRUiu56sxWjqR9rMvxl6jVgzLQd9OxrWJOT1SlnOiKwff1CuMBVU1BJgKne6lOirBL_z5kg_3mlCPpJAlV1FYLdFirhgEgyM8yCyKHEBP5u6dIPioWp6z81MDRMbrpe1Y0lB-JQeA48QDSrlBk4y3CoJYaeCT4vG_8985C9tTVs_zgbetyuqE-0jeJGmhzML2q644da6xUpX-uzoR8TjmLcfj2FvJWi4FePUbGBMvFKqCgfvCfNeOL2iDSLucT1"/>
+</div>
+<div>
+<div class="font-headline-lg-mobile text-tertiary">#24 MORRISON</div>
+<div class="font-label-sm text-on-surface-variant uppercase">3B | .342 AVG | 1 HR Today</div>
+</div>
+</div>
+<div class="space-y-2">
+<div class="font-label-sm text-on-surface-variant uppercase border-b border-white/10 pb-1">Due Up</div>
+<div class="flex justify-between items-center py-1 opacity-100">
+<span class="font-body-data text-on-surface">3. Davis</span>
+<span class="font-label-sm text-on-surface-variant">LF | .288</span>
+</div>
+<div class="flex justify-between items-center py-1 opacity-60">
+<span class="font-body-data text-on-surface">4. Rodriguez</span>
+<span class="font-label-sm text-on-surface-variant">DH | .310</span>
+</div>
+<div class="flex justify-between items-center py-1 opacity-60">
+<span class="font-body-data text-on-surface">5. Wilson</span>
+<span class="font-label-sm text-on-surface-variant">C | .245</span>
+</div>
+</div>
+</div>
+</div>
+<!-- HUD: Pitcher Status -->
+<div class="pixel-border bg-surface-container-high retro-bevel overflow-hidden">
+<div class="bg-secondary-container text-on-secondary px-4 py-2 font-label-sm uppercase flex items-center justify-between">
+<span>On the Mound</span>
+<span class="material-symbols-outlined text-[18px]">sports_baseball</span>
+</div>
+<div class="p-4">
+<div class="flex justify-between items-end mb-4">
+<div>
+<div class="font-headline-lg-mobile text-secondary">THOMPSON</div>
+<div class="font-label-sm text-on-surface-variant">RHP | VANDY</div>
+</div>
+<div class="text-right">
+<div class="font-headline-lg text-on-surface">48</div>
+<div class="font-label-sm text-on-surface-variant">PITCHES</div>
+</div>
+</div>
+<!-- Energy Bar -->
+<div class="space-y-1">
+<div class="flex justify-between font-label-sm">
+<span class="text-on-surface-variant uppercase">Stamina</span>
+<span class="text-on-surface">72%</span>
+</div>
+<div class="h-4 bg-black p-[2px] pixel-border">
+<div class="h-full bg-secondary-container flex gap-[2px]" style="width: 72%;">
+<!-- Discrete segmented blocks look -->
+<div class="h-full w-4 bg-white/20"></div>
+<div class="h-full w-4 bg-white/20"></div>
+<div class="h-full w-4 bg-white/20"></div>
+</div>
+</div>
+</div>
+<div class="mt-4 grid grid-cols-2 gap-4">
+<div class="bg-black/40 p-2 pixel-border">
+<div class="font-label-sm text-on-surface-variant uppercase">K's</div>
+<div class="font-headline-lg-mobile text-on-surface">4</div>
+</div>
+<div class="bg-black/40 p-2 pixel-border">
+<div class="font-label-sm text-on-surface-variant uppercase">Walks</div>
+<div class="font-headline-lg-mobile text-on-surface">1</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Quick Links -->
+<div class="grid grid-cols-2 gap-4">
+<button class="pixel-border bg-navy-mid p-4 retro-bevel text-center active-pressed group">
+<span class="material-symbols-outlined text-primary mb-2 block group-hover:scale-110 transition-transform">analytics</span>
+<span class="font-label-sm text-on-surface uppercase">Full Stats</span>
+</button>
+<button class="pixel-border bg-navy-mid p-4 retro-bevel text-center active-pressed group">
+<span class="material-symbols-outlined text-primary mb-2 block group-hover:scale-110 transition-transform">videocam</span>
+<span class="font-label-sm text-on-surface uppercase">Highlights</span>
+</button>
+</div>
+</aside>
+</div>
+</div>
+</main>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="fixed bottom-0 w-full flex justify-around items-center px-4 py-2 md:hidden bg-navy-mid border-t border-white/10 z-50 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)]">
+<button class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-xl px-4 py-1.5 active-pressed">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">sports_baseball</span>
+<span class="font-metadata text-metadata uppercase tracking-wider mt-1">Scores</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-secondary-container opacity-70 hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined">format_list_numbered</span>
+<span class="font-metadata text-metadata uppercase tracking-wider mt-1">Standings</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-secondary-container opacity-70 hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined">leaderboard</span>
+<span class="font-metadata text-metadata uppercase tracking-wider mt-1">Leaders</span>
+</button>
+</nav>
+<!-- Scanline Effect for Atmosphere -->
+<div class="fixed inset-0 pointer-events-none z-[100] opacity-[0.03]" style="background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06)); background-size: 100% 2px, 3px 100%;"></div>
+<script>
+        // Micro-interaction for refreshing feed simulation
+        document.querySelectorAll('button').forEach(button => {
+            button.addEventListener('mousedown', () => {
+                // The CSS active-pressed handle the travel
+            });
+        });
+
+        // Simple blink for the "Live" indicator feel
+        setInterval(() => {
+            const status = document.querySelector('.bg-primary-container');
+            if(status) {
+                status.style.opacity = status.style.opacity === '0.7' ? '1' : '0.7';
+            }
+        }, 1000);
+    </script>
+</body></html>

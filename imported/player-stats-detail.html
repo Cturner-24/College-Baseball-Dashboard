@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>GRAND SLAM '88 - Ronald Acuña Jr. Stats</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&amp;family=JetBrains+Mono:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-variant": "#353534",
+                        "primary": "#c1c1fe",
+                        "surface-container-lowest": "#0e0e0e",
+                        "on-tertiary-fixed-variant": "#00530e",
+                        "outline": "#918f9a",
+                        "on-background": "#e5e2e1",
+                        "tertiary-container": "#001f02",
+                        "on-surface": "#e5e2e1",
+                        "surface-dim": "#131313",
+                        "inverse-on-surface": "#313030",
+                        "on-tertiary": "#003907",
+                        "tertiary-fixed": "#72ff70",
+                        "background": "#131313",
+                        "secondary-fixed-dim": "#ffb2b8",
+                        "error-container": "#93000a",
+                        "surface-container-low": "#1c1b1b",
+                        "on-error": "#690005",
+                        "error": "#ffb4ab",
+                        "on-primary-fixed": "#141447",
+                        "on-secondary-container": "#5b0018",
+                        "on-secondary": "#67001d",
+                        "on-tertiary-fixed": "#002203",
+                        "inverse-surface": "#e5e2e1",
+                        "surface-container": "#201f1f",
+                        "outline-variant": "#47464f",
+                        "surface-container-highest": "#353534",
+                        "surface-tint": "#c1c1fe",
+                        "tertiary-fixed-dim": "#00e639",
+                        "primary-fixed": "#e1dfff",
+                        "secondary-container": "#ff506e",
+                        "on-tertiary-container": "#009722",
+                        "on-primary": "#2a2b5d",
+                        "surface": "#131313",
+                        "on-error-container": "#ffdad6",
+                        "inverse-primary": "#58598f",
+                        "on-secondary-fixed": "#40000f",
+                        "primary-container": "#121245",
+                        "surface-container-high": "#2a2a2a",
+                        "surface-bright": "#3a3939",
+                        "primary-fixed-dim": "#c1c1fe",
+                        "on-primary-fixed-variant": "#414275",
+                        "secondary-fixed": "#ffdadb",
+                        "on-secondary-fixed-variant": "#91002d",
+                        "tertiary": "#00e639",
+                        "secondary": "#ffb2b8",
+                        "on-surface-variant": "#c8c5d0",
+                        "on-primary-container": "#7c7db5"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0px",
+                        "lg": "0px",
+                        "xl": "0px",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "16px",
+                        "container-max": "1200px",
+                        "margin-desktop": "32px",
+                        "margin-mobile": "16px",
+                        "pixel_unit": "4px"
+                    },
+                    "fontFamily": {
+                        "headline-xl": ["Space Mono"],
+                        "body-md": ["JetBrains Mono"],
+                        "headline-lg-mobile": ["Space Mono"],
+                        "score-display": ["Space Mono"],
+                        "label-sm": ["Space Mono"],
+                        "headline-lg": ["Space Mono"]
+                    },
+                    "fontSize": {
+                        "headline-xl": ["48px", {"lineHeight": "1.1", "letterSpacing": "-2px", "fontWeight": "700"}],
+                        "body-md": ["16px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                        "headline-lg-mobile": ["24px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                        "score-display": ["64px", {"lineHeight": "1", "letterSpacing": "4px", "fontWeight": "700"}],
+                        "label-sm": ["12px", {"lineHeight": "1", "fontWeight": "700"}],
+                        "headline-lg": ["32px", {"lineHeight": "1.2", "fontWeight": "700"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .pixel-border {
+            box-shadow: 
+                -4px 0 0 0 #000,
+                4px 0 0 0 #000,
+                0 -4px 0 0 #000,
+                0 4px 0 0 #000;
+        }
+        
+        .beveled-container {
+            border-top: 4px solid #ffffff40;
+            border-left: 4px solid #ffffff40;
+            border-bottom: 4px solid #00000080;
+            border-right: 4px solid #00000080;
+        }
+
+        .pixel-bg-grid {
+            background-image: linear-gradient(#ffffff05 1px, transparent 1px), linear-gradient(90deg, #ffffff05 1px, transparent 1px);
+            background-size: 16px 16px;
+        }
+
+        .stat-card-active {
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0px #000;
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md overflow-x-hidden pixel-bg-grid">
+<!-- TopAppBar -->
+<header class="bg-surface sticky top-0 z-[100] border-b-4 border-surface-variant shadow-[4px_4px_0px_#0e0e0e]">
+<div class="flex justify-between items-center w-full px-margin-desktop py-4 max-w-container-max mx-auto">
+<div class="font-headline-lg text-headline-lg font-bold text-primary tracking-tighter uppercase">
+                GRAND SLAM '88
+            </div>
+<nav class="hidden md:flex gap-8">
+<a class="font-label-sm text-label-sm uppercase text-on-surface-variant hover:text-primary transition-colors duration-75" href="#">STATS</a>
+<a class="font-label-sm text-label-sm uppercase text-on-surface-variant hover:text-primary transition-colors duration-75" href="#">SCHEDULE</a>
+<a class="font-label-sm text-label-sm uppercase text-on-surface-variant hover:text-primary transition-colors duration-75" href="#">ROSTER</a>
+<a class="font-label-sm text-label-sm uppercase text-secondary border-b-4 border-secondary pb-1" href="#">LEAGUE</a>
+</nav>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary text-3xl cursor-pointer hover:bg-surface-container-high transition-colors p-1" data-icon="account_circle">account_circle</span>
+</div>
+</div>
+</header>
+<main class="relative min-h-screen">
+<!-- Hero Section with Background -->
+<section class="relative h-[450px] w-full flex items-end justify-start overflow-hidden border-b-8 border-primary-container">
+<div class="absolute inset-0 z-0">
+<img alt="Stadium Interior" class="w-full h-full object-cover pixelated" src="https://lh3.googleusercontent.com/aida/ADBb0ui0-hp2VjxCLE_PnEcVsbS9iSLXm7Xi_5ykOUA4NyT1E_S9Uffpg-2bkQW4GvTaBgu7zhCz-7Fdt361QLHJhzQvYJJ7_p_DZZ8FIZZi2e_enesInuZdkqFK9poLsigFutBeXZoEnmJK9HQ-VAvZIzm5gGlKqTuT8itKrH77-z9qiYKWUoCTsXYnN0HTitghC7js1ZU5eKvyA2-e-wB-vUgVBhmvLc87FwL9kd5PdeYDKGILx3bRobpqrYk"/>
+<div class="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent"></div>
+</div>
+<div class="relative z-10 w-full max-w-container-max mx-auto px-margin-desktop pb-12">
+<div class="bg-primary-container/90 inline-block p-8 beveled-container shadow-[8px_8px_0px_#000]">
+<div class="text-secondary font-headline-lg text-headline-lg mb-2 flex items-center gap-4">
+<span class="bg-error px-4 py-1 text-on-error font-bold">#13</span>
+                        ATLANTA BRAVES
+                    </div>
+<h1 class="font-headline-xl text-headline-xl text-primary uppercase tracking-tight">
+                        RONALD ACUÑA JR.
+                    </h1>
+<div class="flex gap-4 mt-4">
+<div class="bg-surface-container-highest px-3 py-1 font-label-sm text-label-sm border-2 border-primary text-primary">OF</div>
+<div class="bg-surface-container-highest px-3 py-1 font-label-sm text-label-sm border-2 border-primary text-primary">R/R</div>
+<div class="bg-surface-container-highest px-3 py-1 font-label-sm text-label-sm border-2 border-primary text-primary">6'0" / 205 LBS</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Main Content Area -->
+<div class="max-w-container-max mx-auto px-margin-desktop py-12 space-y-12">
+<!-- 16-bit Stats Cards Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+<!-- Card 1: AVG -->
+<div class="bg-surface-container border-4 border-surface-variant p-6 beveled-container hover:translate-x-1 hover:translate-y-1 transition-transform group">
+<div class="flex justify-between items-start mb-4">
+<div class="w-16 h-16 bg-surface-container-highest flex items-center justify-center overflow-hidden border-2 border-primary">
+<div class="w-12 h-12 bg-cover" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuASmaPIlDt4ubMiRS2al_4bUdUr9b9TCC4ItK1b_e1QnW6kD31qz8xT6KY2Bg1ToOuFRqh8qHmxP2vkqbFCD4ub4bPiqbuifYAczo-xiosIFpSrroZRxmnehwzPfWLkcCgXR_RfN5V7qB7FD0P747Edr-ezYae1CgbpHXUOvWIsPmEA4CwxR2CM6pFhgNTCUuzOFngp3bZjQSt6J1aI-txqnGbRxb-cDbwyi_M1-uap6zhwElDEYi0cCcMTPsHMIQCAnuBJd8roaY4F'); background-position: 0 0;"></div>
+</div>
+<span class="font-label-sm text-label-sm text-secondary">AVG</span>
+</div>
+<div class="font-score-display text-headline-lg text-primary">.342</div>
+<div class="h-2 w-full bg-surface-variant mt-4 overflow-hidden flex">
+<div class="bg-primary w-[85%] h-full"></div>
+</div>
+</div>
+<!-- Card 2: HR -->
+<div class="bg-surface-container border-4 border-surface-variant p-6 beveled-container hover:translate-x-1 hover:translate-y-1 transition-transform group">
+<div class="flex justify-between items-start mb-4">
+<div class="w-16 h-16 bg-surface-container-highest flex items-center justify-center overflow-hidden border-2 border-error">
+<div class="w-12 h-12 bg-cover" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuASmaPIlDt4ubMiRS2al_4bUdUr9b9TCC4ItK1b_e1QnW6kD31qz8xT6KY2Bg1ToOuFRqh8qHmxP2vkqbFCD4ub4bPiqbuifYAczo-xiosIFpSrroZRxmnehwzPfWLkcCgXR_RfN5V7qB7FD0P747Edr-ezYae1CgbpHXUOvWIsPmEA4CwxR2CM6pFhgNTCUuzOFngp3bZjQSt6J1aI-txqnGbRxb-cDbwyi_M1-uap6zhwElDEYi0cCcMTPsHMIQCAnuBJd8roaY4F'); background-position: -48px 0;"></div>
+</div>
+<span class="font-label-sm text-label-sm text-error">HR</span>
+</div>
+<div class="font-score-display text-headline-lg text-error">41</div>
+<div class="h-2 w-full bg-surface-variant mt-4 overflow-hidden flex">
+<div class="bg-error w-[70%] h-full"></div>
+</div>
+</div>
+<!-- Card 3: RBI -->
+<div class="bg-surface-container border-4 border-surface-variant p-6 beveled-container hover:translate-x-1 hover:translate-y-1 transition-transform group">
+<div class="flex justify-between items-start mb-4">
+<div class="w-16 h-16 bg-surface-container-highest flex items-center justify-center overflow-hidden border-2 border-tertiary">
+<div class="w-12 h-12 bg-cover" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuASmaPIlDt4ubMiRS2al_4bUdUr9b9TCC4ItK1b_e1QnW6kD31qz8xT6KY2Bg1ToOuFRqh8qHmxP2vkqbFCD4ub4bPiqbuifYAczo-xiosIFpSrroZRxmnehwzPfWLkcCgXR_RfN5V7qB7FD0P747Edr-ezYae1CgbpHXUOvWIsPmEA4CwxR2CM6pFhgNTCUuzOFngp3bZjQSt6J1aI-txqnGbRxb-cDbwyi_M1-uap6zhwElDEYi0cCcMTPsHMIQCAnuBJd8roaY4F'); background-position: 0 -48px;"></div>
+</div>
+<span class="font-label-sm text-label-sm text-tertiary">RBI</span>
+</div>
+<div class="font-score-display text-headline-lg text-tertiary">106</div>
+<div class="h-2 w-full bg-surface-variant mt-4 overflow-hidden flex">
+<div class="bg-tertiary w-[90%] h-full"></div>
+</div>
+</div>
+<!-- Card 4: STOLEN BASES -->
+<div class="bg-surface-container border-4 border-surface-variant p-6 beveled-container hover:translate-x-1 hover:translate-y-1 transition-transform group">
+<div class="flex justify-between items-start mb-4">
+<div class="w-16 h-16 bg-surface-container-highest flex items-center justify-center overflow-hidden border-2 border-secondary">
+<div class="w-12 h-12 bg-cover" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuASmaPIlDt4ubMiRS2al_4bUdUr9b9TCC4ItK1b_e1QnW6kD31qz8xT6KY2Bg1ToOuFRqh8qHmxP2vkqbFCD4ub4bPiqbuifYAczo-xiosIFpSrroZRxmnehwzPfWLkcCgXR_RfN5V7qB7FD0P747Edr-ezYae1CgbpHXUOvWIsPmEA4CwxR2CM6pFhgNTCUuzOFngp3bZjQSt6J1aI-txqnGbRxb-cDbwyi_M1-uap6zhwElDEYi0cCcMTPsHMIQCAnuBJd8roaY4F'); background-position: -48px -48px;"></div>
+</div>
+<span class="font-label-sm text-label-sm text-secondary">SB</span>
+</div>
+<div class="font-score-display text-headline-lg text-secondary">73</div>
+<div class="h-2 w-full bg-surface-variant mt-4 overflow-hidden flex">
+<div class="bg-secondary w-[95%] h-full"></div>
+</div>
+</div>
+</div>
+<!-- Recent Performance Table -->
+<div class="bg-surface-container-low border-4 border-surface-variant p-1 shadow-[8px_8px_0px_#000]">
+<div class="bg-primary-container p-4 border-b-4 border-surface-variant flex items-center justify-between">
+<h2 class="font-headline-lg text-headline-lg text-primary uppercase">RECENT PERFORMANCE</h2>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary" data-icon="calendar_today">calendar_today</span>
+<span class="font-label-sm text-label-sm">SEPT 2023</span>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left font-body-md">
+<thead>
+<tr class="bg-surface-container-highest border-b-2 border-surface-variant">
+<th class="p-4 font-label-sm text-primary uppercase">DATE</th>
+<th class="p-4 font-label-sm text-primary uppercase">OPP</th>
+<th class="p-4 font-label-sm text-primary uppercase">RESULT</th>
+<th class="p-4 font-label-sm text-primary uppercase text-center">AB</th>
+<th class="p-4 font-label-sm text-primary uppercase text-center">R</th>
+<th class="p-4 font-label-sm text-primary uppercase text-center">H</th>
+<th class="p-4 font-label-sm text-primary uppercase text-center">RBI</th>
+<th class="p-4 font-label-sm text-primary uppercase text-center">HR</th>
+</tr>
+</thead>
+<tbody class="divide-y-2 divide-surface-variant">
+<tr class="hover:bg-primary-container/30 transition-colors">
+<td class="p-4 font-label-sm">09/30</td>
+<td class="p-4 font-bold text-secondary">@ WSH</td>
+<td class="p-4 text-tertiary">W 5-3</td>
+<td class="p-4 text-center">4</td>
+<td class="p-4 text-center">2</td>
+<td class="p-4 text-center">3</td>
+<td class="p-4 text-center">1</td>
+<td class="p-4 text-center">1</td>
+</tr>
+<tr class="hover:bg-primary-container/30 transition-colors">
+<td class="p-4 font-label-sm">09/29</td>
+<td class="p-4 font-bold text-secondary">@ WSH</td>
+<td class="p-4 text-error">L 6-10</td>
+<td class="p-4 text-center">5</td>
+<td class="p-4 text-center">1</td>
+<td class="p-4 text-center">2</td>
+<td class="p-4 text-center">0</td>
+<td class="p-4 text-center">0</td>
+</tr>
+<tr class="hover:bg-primary-container/30 transition-colors bg-surface-container-high/20">
+<td class="p-4 font-label-sm">09/27</td>
+<td class="p-4 font-bold text-secondary">VS CHC</td>
+<td class="p-4 text-tertiary">W 6-5</td>
+<td class="p-4 text-center">4</td>
+<td class="p-4 text-center">3</td>
+<td class="p-4 text-center">2</td>
+<td class="p-4 text-center">1</td>
+<td class="p-4 text-center">1</td>
+</tr>
+<tr class="hover:bg-primary-container/30 transition-colors">
+<td class="p-4 font-label-sm">09/26</td>
+<td class="p-4 font-bold text-secondary">VS CHC</td>
+<td class="p-4 text-tertiary">W 7-6</td>
+<td class="p-4 text-center">5</td>
+<td class="p-4 text-center">1</td>
+<td class="p-4 text-center">3</td>
+<td class="p-4 text-center">2</td>
+<td class="p-4 text-center">0</td>
+</tr>
+<tr class="hover:bg-primary-container/30 transition-colors">
+<td class="p-4 font-label-sm">09/24</td>
+<td class="p-4 font-bold text-secondary">@ WSH</td>
+<td class="p-4 text-tertiary">W 3-2</td>
+<td class="p-4 text-center">4</td>
+<td class="p-4 text-center">0</td>
+<td class="p-4 text-center">1</td>
+<td class="p-4 text-center">0</td>
+<td class="p-4 text-center">0</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Footer Action Area -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<button class="bg-primary text-on-primary p-6 beveled-container font-headline-lg text-headline-lg-mobile active:scale-95 transition-all">
+                    COMPARE PLAYER
+                </button>
+<button class="bg-secondary text-on-secondary p-6 beveled-container font-headline-lg text-headline-lg-mobile active:scale-95 transition-all">
+                    SEASON LOGS
+                </button>
+<button class="bg-surface-variant text-on-surface p-6 beveled-container font-headline-lg text-headline-lg-mobile active:scale-95 transition-all">
+                    SHARE CARD
+                </button>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation (Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-margin-mobile py-2 bg-surface-container border-t-4 border-surface-variant">
+<div class="flex flex-col items-center justify-center text-on-surface-variant p-2">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-label-sm text-label-sm uppercase">HOME</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant p-2">
+<span class="material-symbols-outlined" data-icon="sports_baseball">sports_baseball</span>
+<span class="font-label-sm text-label-sm uppercase">GAMES</span>
+</div>
+<div class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container border-2 border-primary p-2">
+<span class="material-symbols-outlined" data-icon="leaderboard" style="font-variation-settings: 'FILL' 1;">leaderboard</span>
+<span class="font-label-sm text-label-sm uppercase">TABLE</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant p-2">
+<span class="material-symbols-outlined" data-icon="groups">groups</span>
+<span class="font-label-sm text-label-sm uppercase">TEAM</span>
+</div>
+</nav>
+<script>
+        // Micro-interaction: blinking effect for score-display on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            const scores = document.querySelectorAll('.font-score-display');
+            scores.forEach((score, index) => {
+                score.style.opacity = '0';
+                setTimeout(() => {
+                    score.style.transition = 'opacity 0.2s steps(2)';
+                    score.style.opacity = '1';
+                }, 200 * index);
+            });
+        });
+    </script>
+</body></html>

@@ -1,0 +1,279 @@
+{
+  "designSystems": [
+    {
+      "name": "assets/e10b343f074548029c16c4cc92bac2e3",
+      "designSystem": {
+        "displayName": "Bit-Perfect Arena",
+        "styleGuidelines": "## Brand & Style\n\nThe design system adopts a **Retro / 16-bit** aesthetic, drawing heavy inspiration from the golden era of arcade and console sports titles. The target audience consists of gaming enthusiasts and nostalgic sports fans who value personality and high-energy visuals over sterile corporate layouts.\n\nThe UI is built on a \"Pixel-First\" philosophy. There are no photographic elements or soft gradients; every visual component is rendered as if constrained by a 16-bit color palette and resolution. The emotional response is one of high-stakes competition, urgency, and tactile fun. The style is characterized by hard edges, saturated color blocks, and a distinctive \"arcade cabinet\" glow.\n\n## Layout & Spacing\n\nThe layout follows a **Fixed Grid** model based on a 4px \"pixel unit.\" All margins, paddings, and component sizes must be multiples of 4px to ensure alignment with the perceived pixel grid.\n\n- **Desktop:** 12-column grid with 16px gutters and large 32px safety margins.\n- **Mobile:** 4-column grid with 16px margins. \n- **Alignment:** Content should be strictly snapped to the grid. Avoid fluid percentages for width; use specific column spans to maintain the chunky, structured feel of a vintage game UI.\n\n## Elevation & Depth\n\nDepth is achieved through **Bold Borders** and **Tonal Layers** rather than shadows. In a 16-bit world, light is directional and binary.\n\n- **Stacking:** Higher elevation is indicated by lighter background shades and thicker, high-contrast borders (e.g., a 2px \"highlight\" border on the top and left, and a 2px \"shadow\" border on the bottom and right).\n- **Hard Shadows:** If a shadow is required for a floating modal, use a solid, offset block of 100% black (e.g., `4px 4px 0px #000000`).\n- **No Blurs:** Gaussian blurs and soft shadows are strictly forbidden.\n\n## Components\n\n- **Buttons:** Rectangular with a 2px solid border. Use a \"pressed\" state that offsets the label by 2px down and right to simulate physical travel.\n- **Score Bugs:** Compact blocks using high-contrast team colors. Scores are centered in a black box within the bug, utilizing the `score-display` type style.\n- **Input Fields:** Black background with a primary color border. The cursor should be a solid, blinking block.\n- **Cards:** Use a \"beveled\" look created with solid lines\u2014lighter colors on the top/left edges and darker on the bottom/right.\n- **Lists:** Separated by 2px solid horizontal lines. Row highlights use the secondary color at 100% opacity.\n- **Progress Bars:** Segmented into discrete blocks (e.g., 10 blocks representing 100%) rather than a smooth continuous fill.",
+        "theme": {
+          "colorMode": "DARK",
+          "font": "SPACE_MONO",
+          "customColor": "#121245",
+          "headlineFont": "SPACE_MONO",
+          "bodyFont": "JETBRAINS_MONO",
+          "labelFont": "SPACE_MONO",
+          "namedColors": {
+            "background": "#131313",
+            "error": "#ffb4ab",
+            "error_container": "#93000a",
+            "inverse_on_surface": "#313030",
+            "inverse_primary": "#58598f",
+            "inverse_surface": "#e5e2e1",
+            "on_background": "#e5e2e1",
+            "on_error": "#690005",
+            "on_error_container": "#ffdad6",
+            "on_primary": "#2a2b5d",
+            "on_primary_container": "#7c7db5",
+            "on_primary_fixed": "#141447",
+            "on_primary_fixed_variant": "#414275",
+            "on_secondary": "#67001d",
+            "on_secondary_container": "#5b0018",
+            "on_secondary_fixed": "#40000f",
+            "on_secondary_fixed_variant": "#91002d",
+            "on_surface": "#e5e2e1",
+            "on_surface_variant": "#c8c5d0",
+            "on_tertiary": "#003907",
+            "on_tertiary_container": "#009722",
+            "on_tertiary_fixed": "#002203",
+            "on_tertiary_fixed_variant": "#00530e",
+            "outline": "#918f9a",
+            "outline_variant": "#47464f",
+            "primary": "#c1c1fe",
+            "primary_container": "#121245",
+            "primary_fixed": "#e1dfff",
+            "primary_fixed_dim": "#c1c1fe",
+            "secondary": "#ffb2b8",
+            "secondary_container": "#ff506e",
+            "secondary_fixed": "#ffdadb",
+            "secondary_fixed_dim": "#ffb2b8",
+            "surface": "#131313",
+            "surface_bright": "#3a3939",
+            "surface_container": "#201f1f",
+            "surface_container_high": "#2a2a2a",
+            "surface_container_highest": "#353534",
+            "surface_container_low": "#1c1b1b",
+            "surface_container_lowest": "#0e0e0e",
+            "surface_dim": "#131313",
+            "surface_tint": "#c1c1fe",
+            "surface_variant": "#353534",
+            "tertiary": "#00e639",
+            "tertiary_container": "#001f02",
+            "tertiary_fixed": "#72ff70",
+            "tertiary_fixed_dim": "#00e639"
+          },
+          "designMd": "---\nname: Bit-Perfect Arena\ncolors:\n  surface: '#131313'\n  surface-dim: '#131313'\n  surface-bright: '#3a3939'\n  surface-container-lowest: '#0e0e0e'\n  surface-container-low: '#1c1b1b'\n  surface-container: '#201f1f'\n  surface-container-high: '#2a2a2a'\n  surface-container-highest: '#353534'\n  on-surface: '#e5e2e1'\n  on-surface-variant: '#c8c5d0'\n  inverse-surface: '#e5e2e1'\n  inverse-on-surface: '#313030'\n  outline: '#918f9a'\n  outline-variant: '#47464f'\n  surface-tint: '#c1c1fe'\n  primary: '#c1c1fe'\n  on-primary: '#2a2b5d'\n  primary-container: '#121245'\n  on-primary-container: '#7c7db5'\n  inverse-primary: '#58598f'\n  secondary: '#ffb2b8'\n  on-secondary: '#67001d'\n  secondary-container: '#ff506e'\n  on-secondary-container: '#5b0018'\n  tertiary: '#00e639'\n  on-tertiary: '#003907'\n  tertiary-container: '#001f02'\n  on-tertiary-container: '#009722'\n  error: '#ffb4ab'\n  on-error: '#690005'\n  error-container: '#93000a'\n  on-error-container: '#ffdad6'\n  primary-fixed: '#e1dfff'\n  primary-fixed-dim: '#c1c1fe'\n  on-primary-fixed: '#141447'\n  on-primary-fixed-variant: '#414275'\n  secondary-fixed: '#ffdadb'\n  secondary-fixed-dim: '#ffb2b8'\n  on-secondary-fixed: '#40000f'\n  on-secondary-fixed-variant: '#91002d'\n  tertiary-fixed: '#72ff70'\n  tertiary-fixed-dim: '#00e639'\n  on-tertiary-fixed: '#002203'\n  on-tertiary-fixed-variant: '#00530e'\n  background: '#131313'\n  on-background: '#e5e2e1'\n  surface-variant: '#353534'\ntypography:\n  headline-xl:\n    fontFamily: Space Mono\n    fontSize: 48px\n    fontWeight: '700'\n    lineHeight: '1.1'\n    letterSpacing: -2px\n  headline-lg:\n    fontFamily: Space Mono\n    fontSize: 32px\n    fontWeight: '700'\n    lineHeight: '1.2'\n  score-display:\n    fontFamily: Space Mono\n    fontSize: 64px\n    fontWeight: '700'\n    lineHeight: '1'\n    letterSpacing: 4px\n  body-md:\n    fontFamily: JetBrains Mono\n    fontSize: 16px\n    fontWeight: '400'\n    lineHeight: '1.5'\n  label-sm:\n    fontFamily: Space Mono\n    fontSize: 12px\n    fontWeight: '700'\n    lineHeight: '1'\n  headline-lg-mobile:\n    fontFamily: Space Mono\n    fontSize: 24px\n    fontWeight: '700'\n    lineHeight: '1.2'\nspacing:\n  pixel_unit: 4px\n  gutter: 16px\n  margin-mobile: 16px\n  margin-desktop: 32px\n  container-max: 1200px\n---\n\n## Brand & Style\n\nThe design system adopts a **Retro / 16-bit** aesthetic, drawing heavy inspiration from the golden era of arcade and console sports titles. The target audience consists of gaming enthusiasts and nostalgic sports fans who value personality and high-energy visuals over sterile corporate layouts.\n\nThe UI is built on a \"Pixel-First\" philosophy. There are no photographic elements or soft gradients; every visual component is rendered as if constrained by a 16-bit color palette and resolution. The emotional response is one of high-stakes competition, urgency, and tactile fun. The style is characterized by hard edges, saturated color blocks, and a distinctive \"arcade cabinet\" glow.\n\n## Colors\n\nThe foundation is a deep **Midnight Navy** (#121245), providing a stable backdrop for high-contrast \"score bug\" colors. The system utilizes vibrant, saturated hues to represent team identities and action states:\n\n- **Primary:** Deep Navy for core UI backgrounds.\n- **Secondary:** Cyber Pink for critical actions and highlights.\n- **Tertiary:** Matrix Green for \"Live\" status, scores, and positive data.\n- **Team Colors:** High-saturation pairings (Gold/Orange vs Cyan/Blue) ensure that individual teams pop against the dark canvas, mimicking the color-cycling techniques of retro hardware.\n\nAvoid transparency; use solid dithered patterns if a \"fade\" is required.\n\n## Typography\n\nThis design system utilizes technical, monospaced typefaces to emulate pixel-grid rendering. **Space Mono** serves as the primary display face for all headings, scores, and labels, providing a rigid, geometric structure. **JetBrains Mono** is used for body text to maintain a technical feel while ensuring legibility for longer stats or descriptions.\n\n- **Headings & Labels:** Always uppercase to maximize the \"arcade\" impact.\n- **Scores:** Rendered at maximum scale with increased letter spacing to dominate the visual hierarchy.\n- **Anti-aliasing:** Should be disabled or set to \"pixelated\" in CSS where possible to maintain sharp edges on all glyphs.\n\n## Layout & Spacing\n\nThe layout follows a **Fixed Grid** model based on a 4px \"pixel unit.\" All margins, paddings, and component sizes must be multiples of 4px to ensure alignment with the perceived pixel grid.\n\n- **Desktop:** 12-column grid with 16px gutters and large 32px safety margins.\n- **Mobile:** 4-column grid with 16px margins. \n- **Alignment:** Content should be strictly snapped to the grid. Avoid fluid percentages for width; use specific column spans to maintain the chunky, structured feel of a vintage game UI.\n\n## Elevation & Depth\n\nDepth is achieved through **Bold Borders** and **Tonal Layers** rather than shadows. In a 16-bit world, light is directional and binary.\n\n- **Stacking:** Higher elevation is indicated by lighter background shades and thicker, high-contrast borders (e.g., a 2px \"highlight\" border on the top and left, and a 2px \"shadow\" border on the bottom and right).\n- **Hard Shadows:** If a shadow is required for a floating modal, use a solid, offset block of 100% black (e.g., `4px 4px 0px #000000`).\n- **No Blurs:** Gaussian blurs and soft shadows are strictly forbidden.\n\n## Shapes\n\nThe shape language is **Strictly Sharp (0)**. There are no rounded corners in this design system. \n\nEvery button, card, and input is a perfect rectangle. To simulate \"rounded\" corners in a pixel-art style, use \"stepped\" corners where a single pixel is removed from the absolute corner, creating a 45-degree notch, but maintain a baseline of 90-degree angles for all structural containers.\n\n## Components\n\n- **Buttons:** Rectangular with a 2px solid border. Use a \"pressed\" state that offsets the label by 2px down and right to simulate physical travel.\n- **Score Bugs:** Compact blocks using high-contrast team colors. Scores are centered in a black box within the bug, utilizing the `score-display` type style.\n- **Input Fields:** Black background with a primary color border. The cursor should be a solid, blinking block.\n- **Cards:** Use a \"beveled\" look created with solid lines\u2014lighter colors on the top/left edges and darker on the bottom/right.\n- **Lists:** Separated by 2px solid horizontal lines. Row highlights use the secondary color at 100% opacity.\n- **Progress Bars:** Segmented into discrete blocks (e.g., 10 blocks representing 100%) rather than a smooth continuous fill.",
+          "colorVariant": "FIDELITY",
+          "overridePrimaryColor": "#121245",
+          "overrideSecondaryColor": "#ff0055",
+          "overrideTertiaryColor": "#00ff41",
+          "overrideNeutralColor": "#0a0a0a",
+          "spacingScale": 2,
+          "typography": {
+            "body-md": {
+              "fontFamily": "JetBrains Mono",
+              "fontSize": "16px",
+              "fontWeight": "400",
+              "lineHeight": "1.5"
+            },
+            "headline-lg": {
+              "fontFamily": "Space Mono",
+              "fontSize": "32px",
+              "fontWeight": "700",
+              "lineHeight": "1.2"
+            },
+            "headline-lg-mobile": {
+              "fontFamily": "Space Mono",
+              "fontSize": "24px",
+              "fontWeight": "700",
+              "lineHeight": "1.2"
+            },
+            "headline-xl": {
+              "fontFamily": "Space Mono",
+              "fontSize": "48px",
+              "fontWeight": "700",
+              "lineHeight": "1.1",
+              "letterSpacing": "-2px"
+            },
+            "label-sm": {
+              "fontFamily": "Space Mono",
+              "fontSize": "12px",
+              "fontWeight": "700",
+              "lineHeight": "1"
+            },
+            "score-display": {
+              "fontFamily": "Space Mono",
+              "fontSize": "64px",
+              "fontWeight": "700",
+              "lineHeight": "1",
+              "letterSpacing": "4px"
+            }
+          },
+          "spacing": {
+            "container-max": "1200px",
+            "gutter": "16px",
+            "margin-desktop": "32px",
+            "margin-mobile": "16px",
+            "pixel_unit": "4px"
+          },
+          "headlineFontFamily": "Space Mono",
+          "bodyFontFamily": "Jetbrains Mono",
+          "labelFontFamily": "Space Mono"
+        }
+      },
+      "version": "1"
+    },
+    {
+      "name": "assets/f7d0c89c5b904602b9ded3e173264fb2",
+      "designSystem": {
+        "displayName": "Stadium Broadcast",
+        "styleGuidelines": "## Brand & Style\n\nThis design system embodies a **Corporate / Modern** aesthetic tailored for the high-intensity world of sports media. It mimics the authoritative, data-dense atmosphere of premium sports broadcasting networks, balancing professional reliability with athletic energy.\n\nThe system utilizes a **Hybrid-Themed approach** to define the user experience:\n- **Light \"Analytic\" Mode:** Used for data-heavy surfaces like standings, player stats, and news feeds. It prioritizes clarity, high contrast, and rapid scannability using crisp white surfaces and light slate backgrounds.\n- **Dark \"Stadium\" Mode:** Reserved for navigation and live \"Gamecast\" environments. It utilizes deep midnight tones to evoke the feeling of being under stadium lights, focusing the user's attention on real-time game action and live scores.\n\nThe emotional response should be one of **authority, precision, and excitement**. It feels like a professional tool for power users and passionate fans who demand immediate access to deep-layer statistics without visual clutter.\n\n## Layout & Spacing\n\nThis design system uses a **Fixed Grid** philosophy for the primary content area to maintain a professional, editorial feel, while allowing the shell (nav and hero) to span the viewport.\n\n- **Grid Model:** A 12-column system is used with a maximum content width of `1100px`. \n- **Density:** The system utilizes a \"Tight Rhythm.\" Horizontal and vertical gaps between game cards and data blocks are set to `14px` (LG) rather than standard larger increments to maintain high information density.\n- **Component Padding:** Standard cards use `16px` internal padding, while dense tables drop to `8px` or `12px` vertical padding per row.\n- **Responsive Adaptation:** \n  - **Desktop:** Multi-column layouts (3-4 columns for game cards).\n  - **Mobile:** Content reflows into a single-column stack. Typography scales down slightly, and secondary table columns (e.g., season records) are hidden to prevent horizontal scrolling of the main page.\n\n## Elevation & Depth\n\nVisual hierarchy is primarily established through **Tonal Layers** and **Low-Contrast Outlines**, accented by deep shadows only on the highest-priority floating elements.\n\n- **Base Elevation:** Cards use a thin `1px` border (`#e2e8f0`) and a very soft, low-opacity shadow (`0 1px 4px rgba(0,0,0,0.06)`) to stay grounded on the light background.\n- **Interactive Lift:** Upon hover, cards should \"lift\" using a subtle Y-axis translation (-2px) and a deepening of the shadow to indicate interactivity.\n- **Dark Surface Depth:** On dark backgrounds (Gamecast), depth is achieved via **Glassmorphism**. Surface panels use semi-transparent white overlays (`rgba(255,255,255,0.07)`) with backdrop blurs to create a sense of layered glass under stadium lights.\n- **Status Elevation:** \"Live\" cards are elevated not just by shadow, but by a \"Glow\" effect\u2014a secondary red outer border or shadow that pulses to draw immediate attention.\n\n## Components\n\n### Buttons & Pills\n- **Primary Buttons:** High-contrast blue fill with white text and `8px` corners.\n- **Sport Selector Pills:** Fully rounded (`999px`). The active state uses a solid blue fill, while inactive states use a `2px` border with gray text.\n- **Navigation Arrows:** Circular (`50%` radius) with a border; used for date navigation and carousel controls.\n\n### Cards & Data Tables\n- **Game Cards:** White background, `14px` radius. Features two rows for teams. Winning team names and scores must be bolded and colored in `text-primary`.\n- **Live State:** Cards for active games must include a red border and a pulsing \"LIVE\" badge.\n- **Data Tables:** Use `border-light` (`#f0f4f8`) for row separators. Table headers should be sticky during long scrolls, using the `navy-mid` background or a solid white with a bottom border.\n\n### Status Indicators\n- **Badges:** Small, all-caps labels with high-contrast background tints (e.g., `live-red-bg`, `win-green-bg`).\n- **Gamecast Indicators:** In the dark \"stadium\" view, ball/strike/out counts are represented by colored dots (`#22c55e`, `#facc15`, `#ef4444`). Empty states must be visible but low-contrast (`rgba(255,255,255,0.15)`).\n\n### Inputs\n- **Search/Filters:** Clean white backgrounds with `border-base` and a small `8px` radius. Focus states must use the `primary-blue` as a `2px` ring.",
+        "theme": {
+          "colorMode": "LIGHT",
+          "font": "INTER",
+          "roundness": "ROUND_EIGHT",
+          "customColor": "#2563eb",
+          "headlineFont": "INTER",
+          "bodyFont": "INTER",
+          "labelFont": "INTER",
+          "namedColors": {
+            "amber-warning": "#fbbf24",
+            "background": "#f6fafe",
+            "ball-green": "#22c55e",
+            "border-base": "#e2e8f0",
+            "border-light": "#f0f4f8",
+            "error": "#ba1a1a",
+            "error_container": "#ffdad6",
+            "inverse_on_surface": "#edf1f5",
+            "inverse_primary": "#b4c5ff",
+            "inverse_surface": "#2c3134",
+            "navy-mid": "#1e3a5f",
+            "on_background": "#171c1f",
+            "on_error": "#ffffff",
+            "on_error_container": "#93000a",
+            "on_primary": "#ffffff",
+            "on_primary_container": "#eeefff",
+            "on_primary_fixed": "#00174b",
+            "on_primary_fixed_variant": "#003ea8",
+            "on_secondary": "#ffffff",
+            "on_secondary_container": "#5c647a",
+            "on_secondary_fixed": "#131b2e",
+            "on_secondary_fixed_variant": "#3f465c",
+            "on_surface": "#171c1f",
+            "on_surface_variant": "#434655",
+            "on_tertiary": "#ffffff",
+            "on_tertiary_container": "#ffecea",
+            "on_tertiary_fixed": "#410002",
+            "on_tertiary_fixed_variant": "#93000b",
+            "out-red": "#ef4444",
+            "outline": "#737686",
+            "outline_variant": "#c3c6d7",
+            "primary": "#004ac6",
+            "primary_container": "#2563eb",
+            "primary_fixed": "#dbe1ff",
+            "primary_fixed_dim": "#b4c5ff",
+            "runner-orange": "#f97316",
+            "secondary": "#565e74",
+            "secondary_container": "#dae2fd",
+            "secondary_fixed": "#dae2fd",
+            "secondary_fixed_dim": "#bec6e0",
+            "strike-yellow": "#facc15",
+            "surface": "#f6fafe",
+            "surface_bright": "#f6fafe",
+            "surface_container": "#eaeef2",
+            "surface_container_high": "#e4e9ed",
+            "surface_container_highest": "#dfe3e7",
+            "surface_container_low": "#f0f4f8",
+            "surface_container_lowest": "#ffffff",
+            "surface_dim": "#d6dade",
+            "surface_tint": "#0053db",
+            "surface_variant": "#dfe3e7",
+            "tertiary": "#ae0010",
+            "tertiary_container": "#d52022",
+            "tertiary_fixed": "#ffdad6",
+            "tertiary_fixed_dim": "#ffb4ab",
+            "win-green": "#15803d"
+          },
+          "designMd": "---\nname: Stadium Broadcast\ncolors:\n  surface: '#f6fafe'\n  surface-dim: '#d6dade'\n  surface-bright: '#f6fafe'\n  surface-container-lowest: '#ffffff'\n  surface-container-low: '#f0f4f8'\n  surface-container: '#eaeef2'\n  surface-container-high: '#e4e9ed'\n  surface-container-highest: '#dfe3e7'\n  on-surface: '#171c1f'\n  on-surface-variant: '#434655'\n  inverse-surface: '#2c3134'\n  inverse-on-surface: '#edf1f5'\n  outline: '#737686'\n  outline-variant: '#c3c6d7'\n  surface-tint: '#0053db'\n  primary: '#004ac6'\n  on-primary: '#ffffff'\n  primary-container: '#2563eb'\n  on-primary-container: '#eeefff'\n  inverse-primary: '#b4c5ff'\n  secondary: '#565e74'\n  on-secondary: '#ffffff'\n  secondary-container: '#dae2fd'\n  on-secondary-container: '#5c647a'\n  tertiary: '#ae0010'\n  on-tertiary: '#ffffff'\n  tertiary-container: '#d52022'\n  on-tertiary-container: '#ffecea'\n  error: '#ba1a1a'\n  on-error: '#ffffff'\n  error-container: '#ffdad6'\n  on-error-container: '#93000a'\n  primary-fixed: '#dbe1ff'\n  primary-fixed-dim: '#b4c5ff'\n  on-primary-fixed: '#00174b'\n  on-primary-fixed-variant: '#003ea8'\n  secondary-fixed: '#dae2fd'\n  secondary-fixed-dim: '#bec6e0'\n  on-secondary-fixed: '#131b2e'\n  on-secondary-fixed-variant: '#3f465c'\n  tertiary-fixed: '#ffdad6'\n  tertiary-fixed-dim: '#ffb4ab'\n  on-tertiary-fixed: '#410002'\n  on-tertiary-fixed-variant: '#93000b'\n  background: '#f6fafe'\n  on-background: '#171c1f'\n  surface-variant: '#dfe3e7'\n  navy-mid: '#1e3a5f'\n  win-green: '#15803d'\n  runner-orange: '#f97316'\n  amber-warning: '#fbbf24'\n  ball-green: '#22c55e'\n  strike-yellow: '#facc15'\n  out-red: '#ef4444'\n  border-base: '#e2e8f0'\n  border-light: '#f0f4f8'\ntypography:\n  nav-brand:\n    fontFamily: Inter\n    fontSize: 1.05rem\n    fontWeight: '800'\n    lineHeight: '1.2'\n    letterSpacing: -0.02em\n  hero-headline:\n    fontFamily: Inter\n    fontSize: 1.55rem\n    fontWeight: '800'\n    lineHeight: '1.2'\n  section-title:\n    fontFamily: Inter\n    fontSize: 1.4rem\n    fontWeight: '800'\n    lineHeight: '1.3'\n  score-display:\n    fontFamily: Inter\n    fontSize: 1.15rem\n    fontWeight: '800'\n    lineHeight: '1'\n  table-header:\n    fontFamily: Inter\n    fontSize: 0.82rem\n    fontWeight: '700'\n    lineHeight: '1.5'\n  body-data:\n    fontFamily: Inter\n    fontSize: 0.82rem\n    fontWeight: '400'\n    lineHeight: '1.5'\n  badge-label:\n    fontFamily: Inter\n    fontSize: 0.68rem\n    fontWeight: '700'\n    lineHeight: '1'\n    letterSpacing: 0.05em\n  metadata:\n    fontFamily: Inter\n    fontSize: 0.72rem\n    fontWeight: '400'\n    lineHeight: '1.4'\n  headline-lg-mobile:\n    fontFamily: Inter\n    fontSize: 1.25rem\n    fontWeight: '800'\n    lineHeight: '1.2'\nrounded:\n  sm: 0.25rem\n  DEFAULT: 0.5rem\n  md: 0.75rem\n  lg: 1rem\n  xl: 1.5rem\n  full: 9999px\nspacing:\n  unit: 4px\n  xs: 4px\n  sm: 8px\n  md: 12px\n  lg: 14px\n  xl: 16px\n  container-max: 1100px\n  gutter: 16px\n---\n\n## Brand & Style\n\nThis design system embodies a **Corporate / Modern** aesthetic tailored for the high-intensity world of sports media. It mimics the authoritative, data-dense atmosphere of premium sports broadcasting networks, balancing professional reliability with athletic energy.\n\nThe system utilizes a **Hybrid-Themed approach** to define the user experience:\n- **Light \"Analytic\" Mode:** Used for data-heavy surfaces like standings, player stats, and news feeds. It prioritizes clarity, high contrast, and rapid scannability using crisp white surfaces and light slate backgrounds.\n- **Dark \"Stadium\" Mode:** Reserved for navigation and live \"Gamecast\" environments. It utilizes deep midnight tones to evoke the feeling of being under stadium lights, focusing the user's attention on real-time game action and live scores.\n\nThe emotional response should be one of **authority, precision, and excitement**. It feels like a professional tool for power users and passionate fans who demand immediate access to deep-layer statistics without visual clutter.\n\n## Colors\n\nThe color strategy is divided into functional roles that reinforce the hybrid-theme narrative:\n\n- **Primary & Interactive:** Blue (`#2563eb`) is the dedicated action color for buttons, active states, and focus indicators.\n- **Surface Foundations:** The palette shifts between \"Navy Deep\" (`#0f172a`) for cinematic dark headers/live views and \"Page BG\" (`#f1f5f9`) for the analytical data canvas.\n- **Semantic Feedback:**\n    - **Live/Alert:** Red (`#dc2626`) is reserved for live game states and pulsing indicators.\n    - **Success/Win:** Green (`#15803d`) denotes victories and league leaders.\n    - **Sport-Specific:** Orange (`#f97316`) is used specifically for baseball-specific states like occupied runners on base.\n- **Dynamic Theming:** The design system is intended to be augmented by team-specific accent colors. These should be applied to container borders (left-accents) and subtle background tints to provide immediate visual context for specific matchups.\n\n## Typography\n\nThe typography system is built on **Inter**, chosen for its exceptional legibility at small sizes and high-density data layouts.\n\n- **Weight as Hierarchy:** The system relies heavily on weight shifts (400 to 800) to distinguish between participants and winners. Winning teams and scores must always snap to a higher weight.\n- **Compact Scannability:** For tabular data and secondary labels, font sizes are kept intentionally small (0.82rem) to allow for high data density without overwhelming the user.\n- **Athletic Cues:** Headlines and brand elements use extra-bold weights and tighter letter spacing to mimic the \"impact\" of sports journalism.\n- **Visual Distinction:** All-caps are used sparingly but strictly for status badges (LIVE, FINAL) and table headers to create clear structural anchors.\n\n## Layout & Spacing\n\nThis design system uses a **Fixed Grid** philosophy for the primary content area to maintain a professional, editorial feel, while allowing the shell (nav and hero) to span the viewport.\n\n- **Grid Model:** A 12-column system is used with a maximum content width of `1100px`. \n- **Density:** The system utilizes a \"Tight Rhythm.\" Horizontal and vertical gaps between game cards and data blocks are set to `14px` (LG) rather than standard larger increments to maintain high information density.\n- **Component Padding:** Standard cards use `16px` internal padding, while dense tables drop to `8px` or `12px` vertical padding per row.\n- **Responsive Adaptation:** \n  - **Desktop:** Multi-column layouts (3-4 columns for game cards).\n  - **Mobile:** Content reflows into a single-column stack. Typography scales down slightly, and secondary table columns (e.g., season records) are hidden to prevent horizontal scrolling of the main page.\n\n## Elevation & Depth\n\nVisual hierarchy is primarily established through **Tonal Layers** and **Low-Contrast Outlines**, accented by deep shadows only on the highest-priority floating elements.\n\n- **Base Elevation:** Cards use a thin `1px` border (`#e2e8f0`) and a very soft, low-opacity shadow (`0 1px 4px rgba(0,0,0,0.06)`) to stay grounded on the light background.\n- **Interactive Lift:** Upon hover, cards should \"lift\" using a subtle Y-axis translation (-2px) and a deepening of the shadow to indicate interactivity.\n- **Dark Surface Depth:** On dark backgrounds (Gamecast), depth is achieved via **Glassmorphism**. Surface panels use semi-transparent white overlays (`rgba(255,255,255,0.07)`) with backdrop blurs to create a sense of layered glass under stadium lights.\n- **Status Elevation:** \"Live\" cards are elevated not just by shadow, but by a \"Glow\" effect\u2014a secondary red outer border or shadow that pulses to draw immediate attention.\n\n## Shapes\n\nThe shape language is **Rounded**, using a sophisticated range of radii to distinguish between different component scales:\n\n- **Pills (Full):** Used for status badges, sport selectors, and \"active runner\" indicators to provide a friendly, modern contrast to the rigid data grids.\n- **Large Components (14px):** Primary game cards and content containers. This softens the high-density data and makes the interface feel accessible.\n- **Modals (18px):** The softest radius in the system, used to signify the highest level of the UI stack.\n- **Interactive Elements (8px):** Buttons and input fields use a standard rounded corner to balance efficiency with the overall soft-geometric aesthetic.\n\n## Components\n\n### Buttons & Pills\n- **Primary Buttons:** High-contrast blue fill with white text and `8px` corners.\n- **Sport Selector Pills:** Fully rounded (`999px`). The active state uses a solid blue fill, while inactive states use a `2px` border with gray text.\n- **Navigation Arrows:** Circular (`50%` radius) with a border; used for date navigation and carousel controls.\n\n### Cards & Data Tables\n- **Game Cards:** White background, `14px` radius. Features two rows for teams. Winning team names and scores must be bolded and colored in `text-primary`.\n- **Live State:** Cards for active games must include a red border and a pulsing \"LIVE\" badge.\n- **Data Tables:** Use `border-light` (`#f0f4f8`) for row separators. Table headers should be sticky during long scrolls, using the `navy-mid` background or a solid white with a bottom border.\n\n### Status Indicators\n- **Badges:** Small, all-caps labels with high-contrast background tints (e.g., `live-red-bg`, `win-green-bg`).\n- **Gamecast Indicators:** In the dark \"stadium\" view, ball/strike/out counts are represented by colored dots (`#22c55e`, `#facc15`, `#ef4444`). Empty states must be visible but low-contrast (`rgba(255,255,255,0.15)`).\n\n### Inputs\n- **Search/Filters:** Clean white backgrounds with `border-base` and a small `8px` radius. Focus states must use the `primary-blue` as a `2px` ring.",
+          "colorVariant": "FIDELITY",
+          "overridePrimaryColor": "#2563eb",
+          "overrideSecondaryColor": "#0f172a",
+          "overrideTertiaryColor": "#dc2626",
+          "overrideNeutralColor": "#f1f5f9",
+          "spacingScale": 2,
+          "typography": {
+            "badge-label": {
+              "fontFamily": "Inter",
+              "fontSize": "0.68rem",
+              "fontWeight": "700",
+              "lineHeight": "1",
+              "letterSpacing": "0.05em"
+            },
+            "body-data": {
+              "fontFamily": "Inter",
+              "fontSize": "0.82rem",
+              "fontWeight": "400",
+              "lineHeight": "1.5"
+            },
+            "headline-lg-mobile": {
+              "fontFamily": "Inter",
+              "fontSize": "1.25rem",
+              "fontWeight": "800",
+              "lineHeight": "1.2"
+            },
+            "hero-headline": {
+              "fontFamily": "Inter",
+              "fontSize": "1.55rem",
+              "fontWeight": "800",
+              "lineHeight": "1.2"
+            },
+            "metadata": {
+              "fontFamily": "Inter",
+              "fontSize": "0.72rem",
+              "fontWeight": "400",
+              "lineHeight": "1.4"
+            },
+            "nav-brand": {
+              "fontFamily": "Inter",
+              "fontSize": "1.05rem",
+              "fontWeight": "800",
+              "lineHeight": "1.2",
+              "letterSpacing": "-0.02em"
+            },
+            "score-display": {
+              "fontFamily": "Inter",
+              "fontSize": "1.15rem",
+              "fontWeight": "800",
+              "lineHeight": "1"
+            },
+            "section-title": {
+              "fontFamily": "Inter",
+              "fontSize": "1.4rem",
+              "fontWeight": "800",
+              "lineHeight": "1.3"
+            },
+            "table-header": {
+              "fontFamily": "Inter",
+              "fontSize": "0.82rem",
+              "fontWeight": "700",
+              "lineHeight": "1.5"
+            }
+          },
+          "spacing": {
+            "container-max": "1100px",
+            "gutter": "16px",
+            "lg": "14px",
+            "md": "12px",
+            "sm": "8px",
+            "unit": "4px",
+            "xl": "16px",
+            "xs": "4px"
+          },
+          "headlineFontFamily": "Inter",
+          "bodyFontFamily": "Inter",
+          "labelFontFamily": "Inter"
+        }
+      },
+      "version": "1"
+    }
+  ]
+}

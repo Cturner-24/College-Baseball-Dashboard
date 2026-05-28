@@ -102,6 +102,12 @@ interface LiveSituation {
   onFirst: boolean; onSecond: boolean; onThird: boolean;
   batterName: string; pitcherName: string; inningLabel: string;
   fielders: LiveFielder[];
+  batterHeadshot: string;
+  pitcherHeadshot: string;
+  batterGameLine: string;
+  pitcherGameLine: string;
+  latestPlay: string;
+  inningPlays: string[];
 }
 
 // ─── Constants ────────────────────────────────────────────────────────────────
@@ -263,8 +269,17 @@ async function fetchLiveSituation(sport: Sport, eventId: string): Promise<LiveSi
     const data: any = await res.json();
     const sit = data.situation ?? {};
 
-    // Build athlete ID → shortName map from rosters + boxscore pitchers
+    // Build athlete ID → shortName + headshot maps from rosters
+    // Roster API returns headshot as either a plain string or {href,alt} object
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const toHsUrl = (raw: any): string => {
+      if (!raw) return "";
+      if (typeof raw === "string") return raw;
+      return raw.href ?? raw.url ?? "";
+    };
+
     const athleteById = new Map<string, string>();
+    const headshotById = new Map<string, string>();
     const fielders: LiveFielder[] = [];
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     for (const roster of data.rosters ?? []) {
@@ -274,6 +289,8 @@ async function fetchLiveSituation(sport: Sport, eventId: string): Promise<LiveSi
         const id = String(a.id ?? "");
         const sn = a.shortName ?? a.displayName ?? "";
         athleteById.set(id, sn);
+        const hs = toHsUrl(a.headshot);
+        if (hs) headshotById.set(id, hs);
         const pos: string = entry.position?.abbreviation ?? "";
         // Starters on the field (exclude DH)
         if (entry.active && entry.starter && pos && pos !== "DH") {
@@ -291,6 +308,52 @@ async function fetchLiveSituation(sport: Sport, eventId: string): Promise<LiveSi
       for (const a of pitchSg.athletes ?? []) {
         const id = String(a.athlete?.id ?? "");
         if (!athleteById.has(id)) athleteById.set(id, a.athlete?.shortName ?? "");
+        const hs = toHsUrl(a.athlete?.headshot);
+        if (hs && !headshotById.has(id)) headshotById.set(id, hs);
+      }
+    }
+
+    const batterId  = String(sit.batter?.playerId  ?? "");
+    const pitcherId = String(sit.pitcher?.playerId ?? "");
+
+    // ESPN CDN headshot — works for any athlete ID, used as final fallback
+    const espnHeadshot = (id: string) =>
+      id ? `https://a.espncdn.com/i/headshots/${sport}/players/full/${id}.png` : "";
+
+    const batterHeadshot  = headshotById.get(batterId)  || espnHeadshot(batterId);
+    const pitcherHeadshot = headshotById.get(pitcherId) || espnHeadshot(pitcherId);
+
+    // Extract in-game stats from boxscore
+    let batterGameLine = ""; let pitcherGameLine = "";
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    for (const entry of data.boxscore?.players ?? []) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      for (const sg of entry.statistics ?? []) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const names: string[] = sg.names ?? [];
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const getStat = (row: any, col: string) => {
+          const idx = names.indexOf(col); return idx >= 0 ? String(row.stats?.[idx] ?? "-") : "-";
+        };
+        if (!batterGameLine && names.includes("AB")) {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const row = (sg.athletes ?? []).find((a: any) => String(a.athlete?.id ?? "") === batterId);
+          if (row) {
+            const h = getStat(row,"H"), ab = getStat(row,"AB"),
+                  hr = getStat(row,"HR"), rbi = getStat(row,"RBI"), k = getStat(row,"K");
+            const extras = [hr!=="0"&&hr!=="-"?`${hr} HR`:"", rbi!=="0"&&rbi!=="-"?`${rbi} RBI`:"", k!=="0"&&k!=="-"?`${k} K`:""].filter(Boolean);
+            batterGameLine = `${h}-${ab}${extras.length?`, ${extras.join(", ")}` : ""}`;
+          }
+        }
+        if (!pitcherGameLine && names.includes("IP")) {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const row = (sg.athletes ?? []).find((a: any) => String(a.athlete?.id ?? "") === pitcherId);
+          if (row) {
+            const ip = getStat(row,"IP"), h = getStat(row,"H"),
+                  er = getStat(row,"ER"), k = getStat(row,"K"), bb = getStat(row,"BB");
+            pitcherGameLine = `${ip} IP, ${h} H, ${er} ER, ${k} K, ${bb} BB`;
+          }
+        }
       }
     }
 
@@ -318,13 +381,33 @@ async function fetchLiveSituation(sport: Sport, eventId: string): Promise<LiveSi
       }
     }
 
+    // Collect this inning's play descriptions (most recent first → reversed for display)
+    let curInning = 0; let curSide = "";
+    for (let i = plays.length - 1; i >= 0; i--) {
+      if (plays[i].period?.number) { curInning = plays[i].period.number; curSide = plays[i].period.type ?? ""; break; }
+    }
+    const inningPlays: string[] = [];
+    let latestPlay = "";
+    for (let i = plays.length - 1; i >= 0; i--) {
+      const p = plays[i];
+      const desc: string = p.text ?? p.description ?? "";
+      if (!desc.trim()) continue;
+      if (p.period?.number === curInning && (p.period?.type ?? "") === curSide) {
+        if (!latestPlay) latestPlay = desc;
+        if (inningPlays.length < 5) inningPlays.unshift(desc);
+      } else if (latestPlay) break;
+    }
+
     return {
       balls: sit.balls ?? 0, strikes: sit.strikes ?? 0, outs: sit.outs ?? 0,
       onFirst, onSecond, onThird,
-      batterName:  athleteById.get(String(sit.batter?.playerId  ?? "")) ?? "",
-      pitcherName: athleteById.get(String(sit.pitcher?.playerId ?? "")) ?? "",
+      batterName:  athleteById.get(batterId)  ?? "",
+      pitcherName: athleteById.get(pitcherId) ?? "",
       inningLabel,
       fielders,
+      batterHeadshot, pitcherHeadshot,
+      batterGameLine, pitcherGameLine,
+      latestPlay, inningPlays,
     };
   } catch { return null; }
 }
@@ -785,6 +868,28 @@ const FIELD_COORDS: Record<string, [number, number]> = {
 // Truncate long names for display on the field
 function truncName(n: string, max = 9) { return n.length > max ? n.slice(0, max - 1) + "…" : n; }
 
+function LivePlayerCard({ name, headshot, gameLine, role }: {
+  name: string; headshot: string; gameLine: string; role: "BAT"|"PIT";
+}) {
+  const [imgFailed, setImgFailed] = useState(false);
+  const showImg = Boolean(headshot) && !imgFailed;
+  return (
+    <div className="live-player-card">
+      <div className="live-player-photo-wrap">
+        {showImg
+          ? <img src={headshot} alt={name} className="live-player-photo" onError={() => setImgFailed(true)} />
+          : <div className="live-player-photo-placeholder">{role === "PIT" ? "⚾" : "🏏"}</div>
+        }
+      </div>
+      <div className="live-player-info">
+        <span className={`live-role live-role--${role.toLowerCase()}`}>{role}</span>
+        <span className="live-player-name">{name}</span>
+        {gameLine && <span className="live-game-line">{gameLine}</span>}
+      </div>
+    </div>
+  );
+}
+
 function LiveDiamond({ sit }: { sit: LiveSituation }) {
   // Base diamond vertices
   const HP: [number,number] = [150, 228];
@@ -798,17 +903,6 @@ function LiveDiamond({ sit }: { sit: LiveSituation }) {
 
   const baseColor = (on: boolean) => on ? "#f97316" : "rgba(200,180,150,0.45)";
   const baseShadow = (on: boolean) => on ? "drop-shadow(0 0 5px #f97316aa)" : "none";
-
-  // Dot indicator helper (balls=green, strikes=yellow, outs=red)
-  const dots = (total: number, filled: number, color: string, emptyColor: string) =>
-    Array.from({length: total}, (_, i) => (
-      <circle key={i}
-        cx={0} cy={0} r={5.5}
-        fill={i < filled ? color : emptyColor}
-        stroke="rgba(255,255,255,0.25)" strokeWidth="0.8"
-        transform={`translate(${i * 15}, 0)`}
-      />
-    ));
 
   return (
     <div className="live-diamond-wrap">
@@ -898,11 +992,13 @@ function LiveDiamond({ sit }: { sit: LiveSituation }) {
                   fill="white" fontFamily="Inter,sans-serif">
                   {pos}
                 </text>
-                {/* Player name */}
+                {/* Player name — dark stroke behind white fill for readability */}
                 {name && (
-                  <text x={cx} y={isAbove ? cy+25 : cy-18} textAnchor="middle"
-                    fontSize="7.2" fill="rgba(255,255,255,0.9)"
-                    fontFamily="Inter,sans-serif" fontWeight="600">
+                  <text x={cx} y={isAbove ? cy+27 : cy-19} textAnchor="middle"
+                    fontSize="8.5" fill="white" fontWeight="700"
+                    fontFamily="Inter,sans-serif"
+                    stroke="#0a1a10" strokeWidth="3"
+                    paintOrder="stroke fill">
                     {truncName(name)}
                   </text>
                 )}
@@ -913,20 +1009,23 @@ function LiveDiamond({ sit }: { sit: LiveSituation }) {
 
         {/* ── Info panel (count + matchup) ── */}
         <div className="live-panel">
-          {/* Count */}
-          <div className="live-count-block">
-            <div className="live-count-row">
-              <span className="live-count-label">B</span>
-              <svg width={45} height={12}>{dots(4, sit.balls, "#22c55e", "rgba(255,255,255,0.15)")}</svg>
-            </div>
-            <div className="live-count-row">
-              <span className="live-count-label">S</span>
-              <svg width={30} height={12}>{dots(3, sit.strikes, "#facc15", "rgba(255,255,255,0.15)")}</svg>
-            </div>
-            <div className="live-count-row">
-              <span className="live-count-label">O</span>
-              <svg width={30} height={12}>{dots(3, sit.outs, "#ef4444", "rgba(255,255,255,0.15)")}</svg>
-            </div>
+          {/* Count — BSO indicators */}
+          <div className="bso-block">
+            {([
+              { label: "B", filled: sit.balls,   total: 4, type: "ball"   },
+              { label: "S", filled: sit.strikes, total: 3, type: "strike" },
+              { label: "O", filled: sit.outs,    total: 3, type: "out"    },
+            ] as const).map(({ label, filled, total, type }) => (
+              <div key={label} className="bso-row">
+                <span className="bso-label">{label}</span>
+                <div className="bso-dots">
+                  {Array.from({ length: total }, (_, i) => (
+                    <div key={i} className={`bso-dot${i < filled ? ` bso-dot--${type}` : ""}`} />
+                  ))}
+                </div>
+                <span className="bso-num">{filled}</span>
+              </div>
+            ))}
           </div>
 
           {/* Runners legend */}
@@ -938,19 +1037,41 @@ function LiveDiamond({ sit }: { sit: LiveSituation }) {
             ))}
           </div>
 
-          {/* Matchup */}
+          {/* Pitcher vs Batter matchup cards */}
           <div className="live-matchup">
-            <div className="live-matchup-row">
-              <span className="live-role live-role--bat">🏏 BAT</span>
-              <span className="live-player-name">{sit.batterName || "—"}</span>
-            </div>
-            <div className="live-matchup-row">
-              <span className="live-role live-role--pit">⚾ PIT</span>
-              <span className="live-player-name">{sit.pitcherName || "—"}</span>
-            </div>
+            <LivePlayerCard
+              name={sit.pitcherName || "—"}
+              headshot={sit.pitcherHeadshot}
+              gameLine={sit.pitcherGameLine}
+              role="PIT"
+            />
+            <div className="live-vs-bar">VS</div>
+            <LivePlayerCard
+              name={sit.batterName || "—"}
+              headshot={sit.batterHeadshot}
+              gameLine={sit.batterGameLine}
+              role="BAT"
+            />
           </div>
         </div>
       </div>
+
+      {/* ── Inning play-by-play feed ── */}
+      {sit.inningPlays.length > 0 && (
+        <div className="live-pbp">
+          <div className="live-pbp__header">
+            <span className="live-pbp__title">THIS INNING</span>
+            <span className="live-badge-dot">● LIVE</span>
+          </div>
+          <ul className="live-pbp__list">
+            {sit.inningPlays.map((play, i) => (
+              <li key={i} className={`live-pbp__item${i === sit.inningPlays.length - 1 ? " live-pbp__item--latest" : ""}`}>
+                {play}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </div>
   );
 }
@@ -1374,11 +1495,14 @@ function App() {
         <div className="site-nav__inner">
           <span className="site-nav__brand">⚾ Baseball Dashboard</span>
           <div className="site-nav__tabs">
-            {([["scores","📊 Scores"],["standings","🏆 Standings"],["leaders","⭐ Leaders"]] as [Section,string][]).map(([s,label])=>(
-              <button type="button" key={s} className={`site-nav__tab${section===s?" site-nav__tab--active":""}`} onClick={()=>setSection(s)} aria-current={section===s?"page":undefined}>
-                {label}
-              </button>
-            ))}
+            <button type="button" className={`site-nav__tab${sport==="college-baseball"?" site-nav__tab--active":""}`}
+              onClick={()=>setSport("college-baseball")} aria-pressed={sport==="college-baseball"}>🎓 D1 College</button>
+            <button type="button" className="site-nav__tab site-nav__tab--soon" disabled
+              title="D2/D3 scores require a backend server — no public API is available" aria-disabled="true">
+              🎓 D2 / D3 <span className="pill-badge">Soon</span>
+            </button>
+            <button type="button" className={`site-nav__tab${sport==="mlb"?" site-nav__tab--active":""}`}
+              onClick={()=>setSport("mlb")} aria-pressed={sport==="mlb"}>🏟️ MLB</button>
           </div>
         </div>
       </nav>
@@ -1389,16 +1513,15 @@ function App() {
       {/* ── Inner content ── */}
       <div className="app-container">
 
-        {/* Sport pills */}
+        {/* Section pills */}
         <div className="sport-pills">
-          <button type="button" className={`sport-pill${sport==="college-baseball"?" sport-pill--active":""}`}
-            onClick={()=>setSport("college-baseball")} aria-pressed={sport==="college-baseball"}>🎓 D1 College</button>
-          <button type="button" className="sport-pill sport-pill--soon" disabled
-            title="D2/D3 scores require a backend server — no public API is available" aria-disabled="true">
-            🎓 D2 / D3 <span className="pill-badge">Soon</span>
-          </button>
-          <button type="button" className={`sport-pill${sport==="mlb"?" sport-pill--active":""}`}
-            onClick={()=>setSport("mlb")} aria-pressed={sport==="mlb"}>🏟️ MLB</button>
+          {([["scores","📊 Scores"],["standings","🏆 Standings"],["leaders","⭐ Leaders"]] as [Section,string][]).map(([s,label])=>(
+            <button type="button" key={s}
+              className={`sport-pill${section===s?" sport-pill--active":""}`}
+              onClick={()=>setSection(s)} aria-current={section===s?"page":undefined}>
+              {label}
+            </button>
+          ))}
         </div>
 
         {/* Section transitions */}
