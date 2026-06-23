@@ -4,6 +4,8 @@ A live college baseball and MLB score-tracking dashboard built with React, TypeS
 
 Live data is pulled from ESPN's public API. No backend or API key required.
 
+> **Status:** Hosted deployment coming soon. Run locally with `npm run dev` — setup takes under 2 minutes.
+
 ---
 
 ## Features
@@ -127,11 +129,11 @@ dist/            — Production build output
 
 ## Roadmap
 
+- [ ] Hosted public deployment (Vercel/Amplify)
 - [ ] D2/D3 college baseball scores (requires backend proxy — no public API available)
 - [ ] Push notifications for live game score changes
 - [ ] Favorite teams / personalized feed
 - [ ] Historical game search
-- [ ] Deployment to a stand-alone webpage, no need for local host  
 
 ---
 
