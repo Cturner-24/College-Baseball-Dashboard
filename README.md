@@ -4,7 +4,7 @@ A live college baseball and MLB score-tracking dashboard built with React, TypeS
 
 Live data is pulled from ESPN's public API. No backend or API key required.
 
-> **Status:** Hosted deployment coming soon. Run locally with `npm run dev` — setup takes under 2 minutes.
+> **Status:** Live at [college-baseball-dashboard.vercel.app](https://college-baseball-dashboard.vercel.app). Run locally with `npm run dev` — setup takes under 2 minutes.
 
 ---
 
@@ -45,8 +45,10 @@ Live data is pulled from ESPN's public API. No backend or API key required.
 |---|---|
 | Framework | React 18 + TypeScript |
 | Build tool | Vite |
+| Styling | Tailwind CSS + custom CSS (design tokens in `tokens.ts`) |
 | Animations | Framer Motion |
-| Deployment | AWS Amplify |
+| Deployment | Vercel |
+| Backend (planned) | AWS Amplify — Cognito auth + Bedrock (Claude) API, scaffolded but not yet wired into the app |
 | Data source | ESPN public API (no key required) |
 | Fonts | Space Mono, JetBrains Mono (Google Fonts) |
 
@@ -63,6 +65,14 @@ Live data is pulled from ESPN's public API. No backend or API key required.
 ```bash
 npm install
 ```
+
+### Configure environment variables
+
+```bash
+cp .env.example .env.local
+```
+
+The defaults point at ESPN's public API and work out of the box — no keys required.
 
 ### Run the dev server
 
@@ -88,12 +98,9 @@ npm run preview
 
 ## Deployment
 
-The project is configured for AWS Amplify hosting. The `amplify/` directory contains the backend configuration and `amplify_outputs.json` is generated after deployment.
+The app is hosted on [Vercel](https://vercel.com), connected to this repo — pushes to `main` deploy automatically.
 
-To deploy:
-1. Push the repository to GitHub
-2. Connect the repo to an AWS Amplify app in the AWS Console
-3. Amplify will detect the Vite configuration and build automatically
+The `amplify/` directory is a separate, not-yet-connected AWS Amplify backend (Cognito email auth + a Bedrock-backed `askBedrock` query). It's reserved for a future user-login feature and isn't used by the current UI or the Vercel deployment.
 
 ---
 
@@ -121,7 +128,7 @@ src/
   App.css        — All styles
   tokens.ts      — Design token constants
   main.tsx       — React entry point
-amplify/         — AWS Amplify backend config
+amplify/         — AWS Amplify backend (Cognito auth + Bedrock query), planned for future login feature
 dist/            — Production build output
 ```
 
@@ -129,11 +136,12 @@ dist/            — Production build output
 
 ## Roadmap
 
-- [ ] Hosted public deployment (Vercel/Amplify)
+- [ ] User login (Cognito auth already scaffolded in `amplify/`, not yet wired up)
 - [ ] D2/D3 college baseball scores (requires backend proxy — no public API available)
 - [ ] Push notifications for live game score changes
-- [ ] Favorite teams / personalized feed
+- [ ] Favorite teams / personalized feed (depends on user login)
 - [ ] Historical game search
+- [ ] AI-assisted features via the scaffolded Bedrock (Claude) query
 
 ---
 
