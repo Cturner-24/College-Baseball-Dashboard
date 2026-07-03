@@ -34,6 +34,7 @@
   },
   "dependencies": {
     "@aws-amplify/ui-react": "^6.15.4",
+    "@phosphor-icons/react": "^2.1.10",
     "autoprefixer": "^10.5.0",
     "aws-amplify": "^6.17.0",
     "framer-motion": "^12.40.0",

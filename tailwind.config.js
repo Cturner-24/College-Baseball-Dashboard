@@ -115,8 +115,8 @@ export default {
         "label-sm":           ["Space Mono", "monospace"],
         "nav-brand":          ["Space Mono", "monospace"],
         "metadata":           ["Space Mono", "monospace"],
-        "body-md":            ["JetBrains Mono", "monospace"],
-        "body-data":          ["JetBrains Mono", "monospace"],
+        "body-md":            ["Inter", "system-ui", "sans-serif"],
+        "body-data":          ["Inter", "system-ui", "sans-serif"],
       },
       fontSize: {
         "headline-xl":        ["48px", { lineHeight: "1.1", letterSpacing: "-2px", fontWeight: "700" }],

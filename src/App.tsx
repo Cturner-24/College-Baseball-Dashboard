@@ -21,12 +21,30 @@
 //   useCallback — memoizes a function so it isn't re-created on every render
 //   useRef      — holds a reference to a DOM element without causing re-renders
 import { useState, useEffect, useCallback, useRef } from "react";
+import type { CSSProperties } from "react";
 
 // Framer Motion — an animation library for React.
 //   motion      — a wrapper that adds animation props (initial, animate, exit) to any HTML element
 //   AnimatePresence — lets components animate OUT when they're removed from the page
 //   useReducedMotion — returns true if the user has "reduce motion" enabled in their OS
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+
+// Phosphor Icons — a consistent SVG icon set. Each icon is a React component
+// that renders crisp vector graphics (unlike emojis, which vary per platform).
+import {
+  Baseball,        // Brand mark + generic baseball placeholder
+  GraduationCap,   // College sport tab
+  BaseballCap,     // MLB sport tab
+  SquaresFour,     // Scores section
+  Trophy,          // Standings section
+  Star,            // Leaders section
+  CaretLeft,       // Prev arrows (carousel, date nav)
+  CaretRight,      // Next arrows
+  X,               // Modal close
+  Play,            // Highlight video overlay
+  User,            // Player headshot placeholder
+  Clock,           // "Game hasn't started" notice
+} from "@phosphor-icons/react";
 
 // Import all the CSS styles for this app from App.css
 import "./App.css";
@@ -89,6 +107,7 @@ interface Team {
   score: string;        // Current score as a string (ESPN returns it this way)
   logo: string;         // URL to the team's logo image
   winner: boolean;      // True if this team won (used to bold the winning score)
+  color: string;        // Team primary hex color WITHOUT the # (used for accent edges)
 }
 
 // Describes a single game as returned by the scoreboard API
@@ -244,6 +263,14 @@ const PITCHING_COLS = ["IP","H","R","ER","BB","K","HR","ERA"];
 // Used when building the standings API URL so we always fetch the current season
 const CURRENT_YEAR  = new Date().getFullYear();
 
+// The three dashboard sections with their icons — rendered as pills on desktop
+// and as the fixed bottom navigation bar on mobile.
+const SECTION_ITEMS = [
+  { id: "scores"    as Section, label: "Scores",    icon: SquaresFour },
+  { id: "standings" as Section, label: "Standings", icon: Trophy },
+  { id: "leaders"   as Section, label: "Leaders",   icon: Star },
+];
+
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 // Small utility functions used throughout the app.
 
@@ -293,7 +320,8 @@ async function fetchGames(sport: Sport, date: Date): Promise<Game[]> {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const c = comp.competitors.find((x: any) => x.homeAway === side);
       return { name: c.team.displayName??c.team.name, abbreviation: c.team.abbreviation??"",
-               score: c.score??"", logo: c.team.logo??"", winner: c.winner??false };
+               score: c.score??"", logo: c.team.logo??"", winner: c.winner??false,
+               color: c.team.color??"" };
     };
     return { id: event.id, home: mapSide("home"), away: mapSide("away"),
              status: comp.status.type.name,
@@ -855,7 +883,9 @@ function HeroCarousel({ items, sport }: { items: NewsItem[]; sport: Sport }) {
     return (
       <div className="carousel carousel--empty">
         <div className="carousel__placeholder">
-          <span className="carousel__placeholder-icon">{sport === "mlb" ? "🏟️" : "🎓"}</span>
+          <span className="carousel__placeholder-icon" aria-hidden="true">
+            {sport === "mlb" ? <BaseballCap size={48} weight="duotone" /> : <GraduationCap size={48} weight="duotone" />}
+          </span>
           <h2 className="carousel__placeholder-title">{sport === "mlb" ? "MLB" : "College Baseball"}</h2>
           <p className="carousel__placeholder-sub">Live Scores · Box Scores · Standings</p>
         </div>
@@ -901,8 +931,8 @@ function HeroCarousel({ items, sport }: { items: NewsItem[]; sport: Sport }) {
       {items.length > 1 && (
         <>
           {/* <> is a React Fragment — a wrapper that doesn't add a real HTML element */}
-          <button type="button" className="carousel__btn carousel__btn--prev" onClick={prev} aria-label="Previous">‹</button>
-          <button type="button" className="carousel__btn carousel__btn--next" onClick={next} aria-label="Next">›</button>
+          <button type="button" className="carousel__btn carousel__btn--prev" onClick={prev} aria-label="Previous"><CaretLeft size={18} weight="bold" /></button>
+          <button type="button" className="carousel__btn carousel__btn--next" onClick={next} aria-label="Next"><CaretRight size={18} weight="bold" /></button>
           {/* Dot indicators at the bottom right — one per slide */}
           <div className="carousel__dots">
             {items.map((_, i) => (
@@ -924,7 +954,7 @@ function HeroCarousel({ items, sport }: { items: NewsItem[]; sport: Sport }) {
 function DateNav({ date, setDate, liveCount }: { date: Date; setDate: (d: Date) => void; liveCount?: number }) {
   return (
     <div className="date-nav">
-      <button type="button" className="date-nav__arrow" onClick={() => setDate(shiftDay(date,-1))} aria-label="Previous day">‹</button>
+      <button type="button" className="date-nav__arrow" onClick={() => setDate(shiftDay(date,-1))} aria-label="Previous day"><CaretLeft size={16} weight="bold" /></button>
       <div className="date-nav__center">
         <p className="date-nav__label">{formatDisplayDate(date)}</p>
         {/* Show "Back to Today" if browsing a different date, otherwise show live count */}
@@ -935,26 +965,78 @@ function DateNav({ date, setDate, liveCount }: { date: Date; setDate: (d: Date) 
           <span className="live-count">{liveCount} game{liveCount!>1?"s":""} live</span>
         ) : null}
       </div>
-      <button type="button" className="date-nav__arrow" onClick={() => setDate(shiftDay(date,1))} aria-label="Next day">›</button>
+      <button type="button" className="date-nav__arrow" onClick={() => setDate(shiftDay(date,1))} aria-label="Next day"><CaretRight size={16} weight="bold" /></button>
     </div>
+  );
+}
+
+// ─── Animated Score ───────────────────────────────────────────────────────────
+// A score number that "ticks" like a broadcast graphic: when the value changes,
+// the old digit slides up and out while the new one springs up into place.
+// AnimatePresence with a key on the value drives the swap.
+
+function AnimatedScore({ value, className }: { value: string; className?: string }) {
+  const prefersReduced = useReducedMotion();
+  if (prefersReduced) return <span className={className}>{value}</span>;
+  return (
+    <span className={className} style={{ display: "inline-grid", overflow: "hidden" }}>
+      <AnimatePresence mode="popLayout" initial={false}>
+        <motion.span
+          key={value} // New value = new element = enter/exit animation
+          initial={{ y: "0.9em", opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          exit={{ y: "-0.9em", opacity: 0 }}
+          transition={{ type: "spring", stiffness: 380, damping: 32 }}
+          style={{ display: "inline-block" }}
+        >
+          {value}
+        </motion.span>
+      </AnimatePresence>
+    </span>
   );
 }
 
 // ─── Game Card ────────────────────────────────────────────────────────────────
 // A clickable card representing a single game in the scores grid.
 // Shows both teams, their scores, and the game status.
-// Animates in with the blur-slide-up effect and lifts on hover.
+// Team colors paint the left accent edge (away on top, home on bottom).
+// When a run scores during auto-refresh, the card flashes in the scoring
+// team's color and the score digit ticks like a broadcast graphic.
 
 function GameCard({ game, onClick }: { game: Game; onClick: () => void }) {
   const isFinal = game.status==="STATUS_FINAL";
   const isLive  = game.status==="STATUS_IN_PROGRESS";
   const variants = useBlurSlideUp(); // Picks full or reduced-motion animation
+
+  // Score-change detection: remember the last scores we rendered; when a new
+  // score arrives from polling, flash the card in the scoring team's color.
+  const prevScores = useRef<{ away: string; home: string } | null>(null);
+  const [flashColor, setFlashColor] = useState<string | null>(null);
+  useEffect(() => {
+    const prev = prevScores.current;
+    prevScores.current = { away: game.away.score, home: game.home.score };
+    if (prev && (prev.away !== game.away.score || prev.home !== game.home.score)) {
+      // Whichever side's score changed is the team that scored
+      const scorer = prev.away !== game.away.score ? game.away : game.home;
+      setFlashColor(teamHex(scorer.color, "00e639"));
+      const t = setTimeout(() => setFlashColor(null), 1500); // Matches CSS animation length
+      return () => clearTimeout(t);
+    }
+  }, [game.away.score, game.home.score, game.away, game.home]);
+
+  // CSS custom properties feed the accent edge + flash color into App.css rules
+  const cardStyle = {
+    "--away-color": teamHex(game.away.color, "47464f"),
+    "--home-color": teamHex(game.home.color, "47464f"),
+    ...(flashColor ? { "--flash-color": flashColor } : {}),
+  } as CSSProperties;
+
   return (
     // motion.button is a regular HTML button with Framer Motion animation props
     <motion.button
       type="button"
-      // Template literal: adds the "--live" modifier class only for live games
-      className={`game-card${isLive?" game-card--live":""}`}
+      className={`game-card${isLive?" game-card--live":""}${flashColor?" game-card--flash":""}`}
+      style={cardStyle}
       onClick={onClick}
       aria-label={`${game.away.name} vs ${game.home.name}, ${game.statusDetail}`}
       variants={variants}    // Defines hidden/visible states for the enter animation
@@ -974,16 +1056,72 @@ function GameCard({ game, onClick }: { game: Game; onClick: () => void }) {
         const t = game[side]; // game["away"] or game["home"]
         return (
           <div key={side} className={`team-row${t.winner?" team-row--winner":""}`}>
-            {/* Show team logo if available, otherwise show a baseball emoji */}
-            {t.logo ? <img src={t.logo} alt={t.name} className="team-logo" /> : <div className="team-logo team-logo--placeholder" aria-hidden="true">⚾</div>}
+            {/* Show team logo if available, otherwise a baseball icon */}
+            {t.logo
+              ? <img src={t.logo} alt={t.name} className="team-logo" />
+              : <div className="team-logo team-logo--placeholder" aria-hidden="true"><Baseball size={18} weight="duotone" /></div>}
             <span className="team-name">{t.name}</span>
             {/* Don't show a score for scheduled games — it would just be "0" */}
-            {!game.status.includes("SCHEDULED") && <span className={`score${t.winner?" score--bold":""}`}>{t.score}</span>}
+            {!game.status.includes("SCHEDULED") && (
+              <AnimatedScore value={t.score} className={`score${t.winner?" score--bold":""}`} />
+            )}
           </div>
         );
       })}
       <div className="game-card__cta">View details →</div>
     </motion.button>
+  );
+}
+
+// ─── Score Ticker ─────────────────────────────────────────────────────────────
+// The MLB At Bat-style strip of mini scoreboards pinned below the sticky nav.
+// Always shows TODAY's games (even while browsing other dates), polls every
+// 30 seconds, sorts live games first, and opens the game modal on click.
+
+function ScoreTicker({ games, onSelect }: { games: Game[]; onSelect: (id: string) => void }) {
+  if (games.length === 0) return null;
+
+  // Live games lead the strip, then scheduled, then finals
+  const order = (g: Game) =>
+    g.status === "STATUS_IN_PROGRESS" ? 0 : g.status === "STATUS_FINAL" ? 2 : 1;
+  const sorted = [...games].sort((a, b) => order(a) - order(b));
+
+  return (
+    <div className="score-ticker">
+      <div className="score-ticker__scroll" role="list" aria-label="Today's games">
+        <span className="score-ticker__label" aria-hidden="true">Today</span>
+        {sorted.map(g => {
+          const isLive  = g.status === "STATUS_IN_PROGRESS";
+          const isFinal = g.status === "STATUS_FINAL";
+          const showScores = !g.status.includes("SCHEDULED");
+          return (
+            <button
+              type="button"
+              key={g.id}
+              role="listitem"
+              className={`ticker-chip${isLive ? " ticker-chip--live" : ""}`}
+              style={{ "--chip-color": teamHex(g.home.color, "47464f") } as CSSProperties}
+              onClick={() => onSelect(g.id)}
+              aria-label={`${g.away.abbreviation} at ${g.home.abbreviation}, ${g.statusDetail}`}
+            >
+              <span className={`ticker-chip__status${isLive ? " ticker-chip__status--live" : ""}`}>
+                {isLive ? `● ${g.statusDetail}` : isFinal ? "Final" : g.statusDetail}
+              </span>
+              {(["away","home"] as const).map(side => {
+                const t = g[side];
+                return (
+                  <span key={side} className={`ticker-chip__row${t.winner ? " ticker-chip__row--winner" : ""}`}>
+                    {t.logo && <img src={t.logo} alt="" className="ticker-chip__logo" />}
+                    <span className="ticker-chip__abbr">{t.abbreviation || t.name.slice(0,4)}</span>
+                    {showScores && <AnimatedScore value={t.score} className="ticker-chip__score" />}
+                  </span>
+                );
+              })}
+            </button>
+          );
+        })}
+      </div>
+    </div>
   );
 }
 
@@ -1144,7 +1282,7 @@ function HighlightsSection({ highlights }: { highlights: Highlight[] }) {
         <a key={h.id} href={h.href} target="_blank" rel="noopener noreferrer" className="highlight-card">
           <div className="highlight-thumb-wrap">
             <img src={h.thumbnail} alt="" className="highlight-thumb" />
-            <div className="highlight-play">▶</div> {/* Play button overlay */}
+            <div className="highlight-play" aria-hidden="true"><Play size={28} weight="fill" /></div>
           </div>
           <p className="highlight-headline">{h.headline}</p>
         </a>
@@ -1184,7 +1322,7 @@ function LivePlayerCard({ name, headshot, gameLine, role }: {
         {showImg
           // onError fires if the browser can't load the image — we flag it and show the placeholder
           ? <img src={headshot} alt={name} className="live-player-photo" onError={() => setImgFailed(true)} />
-          : <div className="live-player-photo-placeholder">{role === "PIT" ? "⚾" : "🏏"}</div>
+          : <div className="live-player-photo-placeholder" aria-hidden="true"><User size={26} weight="duotone" /></div>
         }
       </div>
       <div className="live-player-info">
@@ -1226,6 +1364,11 @@ function LiveDiamond({ sit }: { sit: LiveSituation }) {
       <div className="live-inning-bar">
         {sit.inningLabel && <span className="live-inning">{sit.inningLabel}</span>}
         <span className="live-badge-dot">● LIVE</span>
+        {/* Auto-refresh indicator — reassures the user the view updates itself */}
+        <span className="live-update-indicator">
+          <span className="live-update-indicator__dot" aria-hidden="true" />
+          Auto-updates · 20s
+        </span>
       </div>
 
       {/* ── Two-column body: SVG field (left) + info panel (right) ── */}
@@ -1265,25 +1408,20 @@ function LiveDiamond({ sit }: { sit: LiveSituation }) {
           ))}
 
           {/* ── Bases — drawn as rotated squares (diamonds) ── */}
-          {/* Each base uses a <g> (group) element so we can apply the glow filter to the whole group */}
-          {/* 1B */}
-          <g filter={sit.onFirst ? baseShadow(true) : baseShadow(false)}>
-            <rect x={B1[0]-8} y={B1[1]-8} width={16} height={16}
-              fill={baseColor(sit.onFirst)} rx={1}
-              transform={`rotate(45,${B1[0]},${B1[1]})`} /> {/* Rotate 45° around the center point */}
-          </g>
-          {/* 2B */}
-          <g filter={sit.onSecond ? baseShadow(true) : baseShadow(false)}>
-            <rect x={B2[0]-8} y={B2[1]-8} width={16} height={16}
-              fill={baseColor(sit.onSecond)} rx={1}
-              transform={`rotate(45,${B2[0]},${B2[1]})`} />
-          </g>
-          {/* 3B */}
-          <g filter={sit.onThird ? baseShadow(true) : baseShadow(false)}>
-            <rect x={B3[0]-8} y={B3[1]-8} width={16} height={16}
-              fill={baseColor(sit.onThird)} rx={1}
-              transform={`rotate(45,${B3[0]},${B3[1]})`} />
-          </g>
+          {/* Each base uses a <g> (group) so the glow filter and the "base-pop"
+              spring animation (applied via the .base-occupied class the moment a
+              runner reaches the base) affect the whole group */}
+          {([
+            { on: sit.onFirst,  pt: B1 },
+            { on: sit.onSecond, pt: B2 },
+            { on: sit.onThird,  pt: B3 },
+          ] as const).map(({ on, pt }, i) => (
+            <g key={i} filter={baseShadow(on)} className={on ? "base-occupied" : undefined}>
+              <rect x={pt[0]-8} y={pt[1]-8} width={16} height={16}
+                fill={baseColor(on)} rx={1}
+                transform={`rotate(45,${pt[0]},${pt[1]})`} /> {/* Rotate 45° around the center point */}
+            </g>
+          ))}
 
           {/* Home plate — a white pentagon shape */}
           <polygon
@@ -1394,12 +1532,22 @@ function LiveDiamond({ sit }: { sit: LiveSituation }) {
             <span className="live-badge-dot">● LIVE</span>
           </div>
           <ul className="live-pbp__list">
-            {sit.inningPlays.map((play, i) => (
-              // The most recent play (last item) gets a highlighted style
-              <li key={i} className={`live-pbp__item${i === sit.inningPlays.length - 1 ? " live-pbp__item--latest" : ""}`}>
-                {play}
-              </li>
-            ))}
+            {sit.inningPlays.map((play, i) => {
+              const isLatest = i === sit.inningPlays.length - 1;
+              // The most recent play is keyed by its text so a NEW play
+              // triggers the enter animation (slide + fade in)
+              return (
+                <motion.li
+                  key={isLatest ? play : i}
+                  className={`live-pbp__item${isLatest ? " live-pbp__item--latest" : ""}`}
+                  initial={isLatest ? { opacity: 0, x: -12 } : false}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ type: "spring", stiffness: 300, damping: 28 }}
+                >
+                  {play}
+                </motion.li>
+              );
+            })}
           </ul>
         </div>
       )}
@@ -1567,7 +1715,7 @@ function LeadersSection({ sport, date, setDate }: { sport: Sport; date: Date; se
                   <div className="leader-headshot-wrap" style={{ boxShadow: `0 0 0 3px ${tc}40` }}>
                     {p.headshot
                       ? <img src={p.headshot} alt={p.name} className="leader-headshot" />
-                      : <div className="leader-headshot-placeholder">👤</div>}
+                      : <div className="leader-headshot-placeholder" aria-hidden="true"><User size={28} weight="duotone" /></div>}
                   </div>
                   <div className="leader-info">
                     <div className="leader-name">{p.shortName||p.name}</div>
@@ -1660,7 +1808,8 @@ function GameDetailsModal({ game, sport, onClose }: { game: Game; sport: Sport; 
       <div className="modal" ref={modalRef} tabIndex={-1}>
 
         {/* ── Modal Header — team matchup with scores ── */}
-        <div className="modal-header" style={{ background: `linear-gradient(135deg, ${awayColor}18 0%, #f8fafc 45%, ${homeColor}18 100%)` }}>
+        {/* Header gradient washes each team's color in from its side of the matchup */}
+        <div className="modal-header" style={{ background: `linear-gradient(135deg, ${awayColor}30 0%, #0e0e0e 42%, #0e0e0e 58%, ${homeColor}30 100%)` }}>
           <div className="modal-matchup">
             {/* Away team — left side with colored left border */}
             <div className="modal-team" style={{ borderLeft: `4px solid ${awayColor}` }}>
@@ -1670,10 +1819,8 @@ function GameDetailsModal({ game, sport, onClose }: { game: Game; sport: Sport; 
                 <div className="modal-team-label">Away</div>
               </div>
               {!isScheduled && (
-                <span className={`modal-score${game.away.winner?" modal-score--winner":""}`}
-                  style={game.away.winner?{color:awayColor}:{}}>
-                  {game.away.score}
-                </span>
+                <AnimatedScore value={game.away.score}
+                  className={`modal-score${game.away.winner?" modal-score--winner":""}`} />
               )}
             </div>
 
@@ -1688,10 +1835,8 @@ function GameDetailsModal({ game, sport, onClose }: { game: Game; sport: Sport; 
             {/* Home team — right side, mirrored layout */}
             <div className="modal-team modal-team--right" style={{ borderRight: `4px solid ${homeColor}` }}>
               {!isScheduled && (
-                <span className={`modal-score${game.home.winner?" modal-score--winner":""}`}
-                  style={game.home.winner?{color:homeColor}:{}}>
-                  {game.home.score}
-                </span>
+                <AnimatedScore value={game.home.score}
+                  className={`modal-score${game.home.winner?" modal-score--winner":""}`} />
               )}
               <div>
                 <div className="modal-team-name modal-team-name--right">{game.home.name}</div>
@@ -1701,14 +1846,14 @@ function GameDetailsModal({ game, sport, onClose }: { game: Game; sport: Sport; 
             </div>
           </div>
           {/* Close button — positioned absolute top-right via CSS */}
-          <button type="button" className="modal-close-btn" onClick={onClose} aria-label="Close game details">✕</button>
+          <button type="button" className="modal-close-btn" onClick={onClose} aria-label="Close game details"><X size={16} weight="bold" /></button>
         </div>
 
         {/* ── Tab bar — only shown for non-scheduled games ── */}
         {!isScheduled && (
           <div className="modal-tabs">
             {([
-               ...(isLive?[{id:"gamecast",label:"🔴 Gamecast"}]:[]), // Gamecast only for live games
+               ...(isLive?[{id:"gamecast",label:"● Gamecast"}]:[]), // Gamecast only for live games
                {id:"boxscore",label:"Box Score"},
                {id:"scoring",label:"Scoring Summary"},
                ...(showHighlightsTab?[{id:"highlights",label:"Highlights"}]:[]),
@@ -1732,7 +1877,7 @@ function GameDetailsModal({ game, sport, onClose }: { game: Game; sport: Sport; 
           {isScheduled ? (
             // Game hasn't started yet
             <div className="modal-empty">
-              <p>⏰ This game hasn't started yet.</p>
+              <p><Clock size={16} weight="bold" style={{ verticalAlign: "-3px", marginRight: "6px" }} aria-hidden="true" />This game hasn't started yet.</p>
               <p className="modal-empty-sub">Check back at game time for live scores and stats.</p>
             </div>
           ) : activeTab==="gamecast" ? (
@@ -1864,6 +2009,7 @@ function App() {
   const [gamesError,   setGamesError]   = useState<string|null>(null);
   const [selectedGameId, setSelectedGameId] = useState<string|null>(null);       // ID of open modal game
   const [news,         setNews]         = useState<NewsItem[]>([]);              // Carousel articles
+  const [tickerGames,  setTickerGames]  = useState<Game[]>([]);                  // TODAY's games for the ticker
 
   // Fetches the game list for the current sport and date.
   // useCallback prevents this function from being re-created on every render,
@@ -1875,21 +2021,38 @@ function App() {
     finally { setGamesLoading(false); } // Runs whether fetch succeeded or failed
   }, [sport, selectedDate]); // Re-create this function only when sport or date changes
 
+  // Derived: does today's slate (per the ticker) have live games right now?
+  const hasLive = tickerGames.some(g => g.status === "STATUS_IN_PROGRESS");
+
   // Load games on mount and whenever sport or date changes.
-  // If viewing today, also auto-refresh every 60 seconds to catch score updates.
+  // If viewing today, auto-refresh — every 30s while games are live, 60s otherwise —
+  // so scores update without a manual reload (the flash animation shows changes).
   useEffect(() => {
     loadGames();
     if (isToday(selectedDate)) {
-      const id = setInterval(loadGames, 60_000); // 60_000 ms = 60 seconds
+      const id = setInterval(loadGames, hasLive ? 30_000 : 60_000);
       return () => clearInterval(id);            // Cancel the interval on cleanup
     }
-  }, [loadGames, selectedDate]);
+  }, [loadGames, selectedDate, hasLive]);
+
+  // The ticker always shows TODAY's slate regardless of which date the user is
+  // browsing, so it fetches independently and polls every 30 seconds.
+  useEffect(() => {
+    const load = () => fetchGames(sport, new Date()).then(setTickerGames).catch(() => {});
+    load();
+    const id = setInterval(load, 30_000);
+    return () => clearInterval(id);
+  }, [sport]);
 
   // Reload news whenever the sport changes (MLBnews vs college news)
   useEffect(() => { fetchNews(sport).then(setNews); }, [sport]);
 
-  // Derived values — computed from existing state, not stored separately
-  const selectedGame = games.find(g=>g.id===selectedGameId)??null; // The full Game object for the open modal
+  // Derived values — computed from existing state, not stored separately.
+  // The selected game may come from the main grid OR from a ticker chip
+  // (which can show today's games while the user browses another date).
+  const selectedGame = games.find(g=>g.id===selectedGameId)
+                    ?? tickerGames.find(g=>g.id===selectedGameId)
+                    ?? null;
   const liveCount    = games.filter(g=>g.status==="STATUS_IN_PROGRESS").length; // For the "N games live" badge
   const handleClose  = useCallback(()=>setSelectedGameId(null),[]); // Stable close handler for the modal
 
@@ -1899,21 +2062,28 @@ function App() {
       {/* ── Sticky navigation bar ── */}
       <nav className="site-nav">
         <div className="site-nav__inner">
-          <span className="site-nav__brand">⚾ Baseball Dashboard</span>
+          <span className="site-nav__brand"><Baseball size={22} weight="duotone" aria-hidden="true" /> Baseball Dashboard</span>
           {/* Sport selector buttons — D1 College, D2/D3 (disabled), MLB */}
           <div className="site-nav__tabs">
             <button type="button" className={`site-nav__tab${sport==="college-baseball"?" site-nav__tab--active":""}`}
-              onClick={()=>setSport("college-baseball")} aria-pressed={sport==="college-baseball"}>🎓 D1 College</button>
+              onClick={()=>setSport("college-baseball")} aria-pressed={sport==="college-baseball"}>
+              <GraduationCap size={15} weight="bold" aria-hidden="true" /> D1 College
+            </button>
             {/* D2/D3 is disabled — no public API exists for it yet */}
             <button type="button" className="site-nav__tab site-nav__tab--soon" disabled
               title="D2/D3 scores require a backend server — no public API is available" aria-disabled="true">
-              🎓 D2 / D3 <span className="pill-badge">Soon</span>
+              <GraduationCap size={15} weight="bold" aria-hidden="true" /> D2 / D3 <span className="pill-badge">Soon</span>
             </button>
             <button type="button" className={`site-nav__tab${sport==="mlb"?" site-nav__tab--active":""}`}
-              onClick={()=>setSport("mlb")} aria-pressed={sport==="mlb"}>🏟️ MLB</button>
+              onClick={()=>setSport("mlb")} aria-pressed={sport==="mlb"}>
+              <BaseballCap size={15} weight="bold" aria-hidden="true" /> MLB
+            </button>
           </div>
         </div>
       </nav>
+
+      {/* ── Live score ticker — today's slate, pinned below the nav ── */}
+      <ScoreTicker games={tickerGames} onSelect={setSelectedGameId} />
 
       {/* ── Hero news carousel — full width, outside the centered content container ── */}
       <HeroCarousel items={news} sport={sport} />
@@ -1921,13 +2091,13 @@ function App() {
       {/* ── Centered content container (max-width 1200px) ── */}
       <div className="app-container">
 
-        {/* Section pills — Scores / Standings / Leaders */}
+        {/* Section pills — Scores / Standings / Leaders (desktop; bottom nav on mobile) */}
         <div className="sport-pills">
-          {([["scores","📊 Scores"],["standings","🏆 Standings"],["leaders","⭐ Leaders"]] as [Section,string][]).map(([s,label])=>(
-            <button type="button" key={s}
-              className={`sport-pill${section===s?" sport-pill--active":""}`}
-              onClick={()=>setSection(s)} aria-current={section===s?"page":undefined}>
-              {label}
+          {SECTION_ITEMS.map(({ id, label, icon: Icon }) => (
+            <button type="button" key={id}
+              className={`sport-pill${section===id?" sport-pill--active":""}`}
+              onClick={()=>setSection(id)} aria-current={section===id?"page":undefined}>
+              <Icon size={14} weight="bold" aria-hidden="true" /> {label}
             </button>
           ))}
         </div>
@@ -2015,6 +2185,18 @@ function App() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* ── Mobile bottom navigation — fixed tab bar, hidden on desktop via CSS ── */}
+      <nav className="bottom-nav" aria-label="Sections">
+        {SECTION_ITEMS.map(({ id, label, icon: Icon }) => (
+          <button type="button" key={id}
+            className={`bottom-nav__item${section===id?" bottom-nav__item--active":""}`}
+            onClick={()=>setSection(id)} aria-current={section===id?"page":undefined}>
+            <Icon size={20} weight={section===id?"fill":"regular"} aria-hidden="true" />
+            {label}
+          </button>
+        ))}
+      </nav>
     </>
   );
 }

@@ -91,8 +91,8 @@ export const fontFamily = {
   "label-sm":          ["Space Mono", "monospace"],
   "nav-brand":         ["Space Mono", "monospace"],
   "metadata":          ["Space Mono", "monospace"],
-  "body-md":           ["JetBrains Mono", "monospace"],
-  "body-data":         ["JetBrains Mono", "monospace"],
+  "body-md":           ["Inter", "system-ui", "sans-serif"],
+  "body-data":         ["Inter", "system-ui", "sans-serif"],
 } as const;
 
 export const fontSize = {
