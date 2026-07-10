@@ -329,6 +329,25 @@ async function fetchGames(sport: Sport, date: Date): Promise<Game[]> {
   });
 }
 
+// ESPN's news API only returns small (~600px wide) thumbnails, which look blurry
+// stretched across the full-width hero carousel. The espncdn.com "combiner"
+// endpoint can re-render the same source photo at any size, so we rewrite the
+// thumbnail URL into a 1600px-wide request. Non-ESPN or unparseable URLs are
+// returned unchanged.
+function toHighResImageUrl(url: string): string {
+  try {
+    const u = new URL(url);
+    if (!u.hostname.endsWith("espncdn.com")) return url;
+    // If it's already a combiner URL, keep its img path; otherwise use the pathname
+    const imgPath = u.pathname.startsWith("/combiner/i")
+      ? (u.searchParams.get("img") ?? u.pathname)
+      : u.pathname;
+    return `https://a.espncdn.com/combiner/i?img=${imgPath}&w=1600&h=900`;
+  } catch {
+    return url;
+  }
+}
+
 // Fetches the latest baseball news articles for the hero carousel.
 // Returns up to 8 articles that have images. Wrapped in try/catch so a failure
 // just returns an empty array rather than crashing the app.
@@ -348,7 +367,7 @@ async function fetchNews(sport: Sport): Promise<NewsItem[]> {
         headline: a.headline ?? "",
         // Strip any HTML tags from the description text, then trim to 180 characters
         description: (a.description ?? "").replace(/<[^>]*>/g,"").slice(0,180),
-        imageUrl: a.images[0].url,
+        imageUrl: toHighResImageUrl(a.images[0].url),
         href: a.links?.web?.href ?? "",
         category: a.categories?.[0]?.description ?? "",
       }));
@@ -2002,7 +2021,7 @@ function GameDetailsModal({ game, sport, onClose }: { game: Game; sport: Sport; 
 function App() {
   // ── Top-level state ─────────────────────────────────────────────────────────
   const [section,      setSection]      = useState<Section>("scores");           // Active section tab
-  const [sport,        setSport]        = useState<Sport>("college-baseball");    // Active sport
+  const [sport,        setSport]        = useState<Sport>("mlb");                 // Active sport (MLB is the default landing page)
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());            // Date for scores/leaders
   const [games,        setGames]        = useState<Game[]>([]);                  // Games for the selected date
   const [gamesLoading, setGamesLoading] = useState(false);

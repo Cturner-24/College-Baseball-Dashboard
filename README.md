@@ -1,10 +1,12 @@
 # ⚾ Baseball Dashboard
 
+### 🔗 [Live site → college-baseball-dashboard.vercel.app](https://college-baseball-dashboard.vercel.app)
+
 A live college baseball and MLB score-tracking dashboard built with React, TypeScript, and Vite. Think ESPN GameCenter meets a clean, dark sports-media aesthetic — data-dense but visually approachable, with bold use of team colors and smooth animations.
 
 Live data is pulled from ESPN's public API. No backend or API key required.
 
-> **Status:** Live at [college-baseball-dashboard.vercel.app](https://college-baseball-dashboard.vercel.app). Run locally with `npm run dev` — setup takes under 2 minutes.
+> **Status:** Live and deployed on Vercel. Run locally with `npm run dev` — setup takes under 2 minutes.
 
 ---
 
@@ -33,7 +35,7 @@ Live data is pulled from ESPN's public API. No backend or API key required.
 - Player headshots, team logos, stat lines, and matchup context
 
 ### Navigation
-- Sport selector (D1 College / MLB) in the sticky top navbar
+- Sport selector (MLB / D1 College) in the sticky top navbar — MLB is the default landing page
 - Section selector (Scores / Standings / Leaders) below the hero carousel
 - Framer Motion page transitions and card animations throughout
 

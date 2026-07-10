@@ -78,7 +78,7 @@
 /* ─── Hero Carousel ────────────────────────────────────────────────────────── */
 .carousel {
   position: relative;
-  height: clamp(220px, 38vw, 400px);
+  height: clamp(240px, 40vw, 460px);
   background: #0e0e0e;
   overflow: hidden;
   border-bottom: 2px solid #47464f;
@@ -110,7 +110,10 @@
   position: absolute;
   inset: 0;
   background-size: cover;
-  background-position: center;
+  /* News photos are 16:9 but the hero is much wider, so `cover` has to crop
+     vertically. Biasing toward the upper part of the photo keeps faces and
+     the play in frame — sports photos put their subject in the top third. */
+  background-position: center 25%;
   opacity: 0;
   transition: opacity 0.7s ease;
 }
